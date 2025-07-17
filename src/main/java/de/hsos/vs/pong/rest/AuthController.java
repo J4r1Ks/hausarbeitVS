@@ -1,4 +1,7 @@
 package de.hsos.vs.pong.rest;
 
-public class AuthController {
+import jakarta.servlet.http.HttpServlet;
+
+public class AuthController extends HttpServlet {
+
 }
