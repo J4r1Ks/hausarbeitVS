@@ -12,4 +12,10 @@ import java.util.Optional;
  */
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByUsername(String username);
+
+    /** Man könnte hier weitere Methoden implementieren, falls man bestimmte SQL
+     * Befehle verwenden möchte wie zu z.B.
+     * @Query("SELECT u FROM User u WHERE u.salt = :salt")
+     * also User mit einem bestimmten salt gucken oder so.
+     */
 }

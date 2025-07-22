@@ -32,4 +32,9 @@ public class PasswordUtil {
             throw new RuntimeException("SHA-256 not available", e);
         }
     }
+
+    // Überprüft ein Klartext-Passwort gegen gespeicherte Hash+Salt
+    public boolean verifyPassword(String password, String salt, String hash) {
+        return hashPassword(password, salt).equals(hash);
+    }
 }
