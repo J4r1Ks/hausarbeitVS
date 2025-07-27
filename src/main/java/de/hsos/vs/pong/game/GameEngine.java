@@ -5,10 +5,12 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.util.Arrays;
 
-public class GameEngine extends JFrame {
+public class GameEngine extends JPanel {
+
+    private JFrame frame = new JFrame();
 
     private Color mainColor = new Color(20, 60, 100);
-    private Color secondaryColor = new Color(100, 60, 20);
+    private Color secondaryColor = new Color(235, 195, 155);
 
     private Color player1Color = new Color(100, 20, 20);
     private Color player2Color = new Color(20, 100, 20);
@@ -19,15 +21,14 @@ public class GameEngine extends JFrame {
     private int playerHeight = 120;
 
     private PlayerController player1 = new PlayerController(true);
-    private int player1Velocity = 0;
     private int player1Position = 300;
 
     public GameEngine() {
-        this.setTitle("Quong");
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setResizable(false);
-        this.setMinimumSize(new Dimension(1000, 800));
-        this.getContentPane().setBackground(mainColor);
+        frame.setTitle("Quong");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setResizable(false);
+        frame.setMinimumSize(new Dimension(1000, 800));
+        this.setBackground(mainColor);
 
         JLabel label = new JLabel("CHAT");
         label.setVerticalAlignment(JLabel.TOP);
@@ -35,12 +36,13 @@ public class GameEngine extends JFrame {
         label.setFont(new Font("Mono", Font.PLAIN, 30));
         label.setForeground(secondaryColor);
         label.setVisible(true);
-        this.add(label);
+        frame.add(label);
 
-        this.addKeyListener(player1);
+        frame.addKeyListener(player1);
 
-        this.pack();
-        this.setVisible(true);
+        frame.pack();
+        frame.setVisible(true);
+        frame.add(this);
     }
 
     @Override
@@ -48,31 +50,29 @@ public class GameEngine extends JFrame {
         super.update(g);
         //this.paint(this.getGraphics());
         if(player1.upPressed){
-            player1Velocity = 1;
             player1Position -= 20;
         }else if(player1.downPressed){
-            player1Velocity = -1;
             player1Position += 20;
-        }else{
-            player1Velocity = 0;
         }
     }
 
-    public void paint(Graphics g) {
-        super.paint(g);
+    @Override
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        g.setColor(Color.black);
         g.fillRect(0, 0, 800, 800);
 
         g.setColor(player1Color);
-        g.fillRect(playerWidth-5, player1Position, playerWidth, playerHeight);
+        g.fillRect(0, player1Position, playerWidth, playerHeight);
 
         g.setColor(player2Color);
         g.fillRect(800-playerWidth, 300, playerWidth, playerHeight);
 
         g.setColor(player3Color);
-        g.fillRect(300, 30, playerHeight, playerWidth);
+        g.fillRect(300, 0, playerHeight, playerWidth);
 
         g.setColor(player4Color);
-        g.fillRect(300, 800-19, playerHeight, playerWidth);
+        g.fillRect(300, 751, playerHeight, playerWidth);
 
         g.setColor(Color.white);
         g.fillRect(400, 400, 16, 16);
@@ -83,8 +83,8 @@ public class GameEngine extends JFrame {
         long timer = System.currentTimeMillis();
 
         while(true){
-            if(System.currentTimeMillis()-timer > 200){
-                timer =  System.currentTimeMillis();
+            if(System.currentTimeMillis()-timer > 66){
+                timer = System.currentTimeMillis();
                 game.update(game.getGraphics());
             }
         }
