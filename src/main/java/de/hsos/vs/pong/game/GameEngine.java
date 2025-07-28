@@ -7,7 +7,7 @@ import java.util.Arrays;
 
 public class GameEngine extends JPanel {
 
-    private byte choosePlayer = 2;
+    private byte choosePlayer = 0;
 
     private JFrame frame = new JFrame();
 
@@ -30,6 +30,12 @@ public class GameEngine extends JPanel {
     private int player2Position = 300;
     private int player3Position = 300;
     private int player4Position = 300;
+
+    private float ballX = 400;
+    private float ballY = 400;
+    private float dirX = -1;
+    private float dirY = -0.5f;
+    private float ballSpeed = 12;
 
     public GameEngine() {
         frame.setTitle("Quong");
@@ -71,6 +77,7 @@ public class GameEngine extends JPanel {
             case 3:
                 player4Position = playerMovementHorizontal(player4, player4Position); break;
         }
+        ballMovement();
     }
 
     private int playerMovementVertical(PlayerController player, int playerPosition) {
@@ -99,6 +106,20 @@ public class GameEngine extends JPanel {
         return playerPosition;
     }
 
+    private void ballMovement(){
+        ballX += dirX * ballSpeed;
+        ballY += dirY * ballSpeed;
+        if(ballX <= 0 || ballX >= 800 - 16){
+            //dirX *= (float) Math.random() * 0.5f + 0.5f;
+            dirX *= -1;
+            ballSpeed += 1f;
+        }else if(ballY < 0 || ballY > 763 - 16){
+            //dirY *= (float) Math.random() * 0.5f + 0.5f;
+            dirY *= -1;
+            ballSpeed += 1f;
+        }
+    }
+
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -118,7 +139,7 @@ public class GameEngine extends JPanel {
         g.fillRect(player4Position, 751, playerHeight, playerWidth);
 
         g.setColor(Color.white);
-        g.fillRect(400, 400, 16, 16);
+        g.fillRect((int)ballX, (int) ballY, 16, 16);
     }
 
     public static void main(String[ ] args){
