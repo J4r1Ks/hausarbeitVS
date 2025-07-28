@@ -31,6 +31,7 @@ public class GameEngine extends JPanel {
     private int player3Position = 300;
     private int player4Position = 300;
 
+    private int ballSize = 16;
     private float ballX = 400;
     private float ballY = 400;
     private float dirX = -1;
@@ -66,17 +67,16 @@ public class GameEngine extends JPanel {
     @Override
     public void update(Graphics g) {
         this.repaint();
-        //this.paint(this.getGraphics());
-        switch (choosePlayer) {
-            case 0:
-                player1Position = playerMovementVertical(player1, player1Position); break;
-            case 1:
-                player2Position = playerMovementVertical(player2, player2Position); break;
-            case 2:
-                player3Position = playerMovementHorizontal(player3, player3Position); break;
-            case 3:
-                player4Position = playerMovementHorizontal(player4, player4Position); break;
-        }
+        //switch (choosePlayer) {
+            //case 0:
+                player1Position = playerMovementVertical(player1, player1Position); //break;
+           // case 1:
+                player2Position = playerMovementVertical(player2, player2Position);// break;
+            //case 2:
+                player3Position = playerMovementHorizontal(player3, player3Position);// break;
+           // case 3:
+                player4Position = playerMovementHorizontal(player4, player4Position); //break;
+       // }
         ballMovement();
     }
 
@@ -109,15 +109,65 @@ public class GameEngine extends JPanel {
     private void ballMovement(){
         ballX += dirX * ballSpeed;
         ballY += dirY * ballSpeed;
-        if(ballX <= 0 || ballX >= 800 - 16){
-            //dirX *= (float) Math.random() * 0.5f + 0.5f;
-            dirX *= -1;
-            ballSpeed += 1f;
-        }else if(ballY < 0 || ballY > 763 - 16){
-            //dirY *= (float) Math.random() * 0.5f + 0.5f;
-            dirY *= -1;
-            ballSpeed += 1f;
+        if(collisionY(player1Position)){
+            if(ballX < playerWidth){
+                dirX *= -1;
+            }
+        }if(collisionY(player2Position)){
+            if(ballX >= 800 - playerWidth - ballSize){
+                dirX *= -1;
+            }
+        }if(collisionX(player3Position)){
+            if(ballY < playerWidth){
+                dirY *= -1;
+            }
+        }if(collisionX(player4Position)){
+            if(ballY > 763 - playerWidth - ballSize){
+                dirY *= -1;
+            }
         }
+        if(ballX < 0){
+            resetBall();
+        }
+        if(ballX > 800){
+            resetBall();
+        }
+        if(ballY < 0){
+            resetBall();
+        }
+        if(ballY > 763){
+            resetBall();
+        }
+    }
+    private boolean collisionY(int playerPosition){
+        if(ballY+ballSize >= playerPosition && ballY <= playerPosition+playerHeight){
+            return true;
+        }
+        return false;
+    }
+    private boolean collisionX(int playerPosition){
+        if(ballX+ballSize >= playerPosition && ballX <= playerPosition+playerHeight){
+            return true;
+        }
+        return false;
+    }
+    private void resetBall(){
+        ballX = 400;
+        ballY = 400;
+    }
+
+    //Kaputt
+    private float directionChanger(float dir){
+        if(dir == -0.5f){
+            return -1;
+        }else if(dir == -1){
+            return -0.5f;
+        }else if(dir == 0.5f){
+            return 1;
+        }else if(dir == 1){
+            return 0.5f;
+        }
+        return dir;
     }
 
     @Override
@@ -139,7 +189,7 @@ public class GameEngine extends JPanel {
         g.fillRect(player4Position, 751, playerHeight, playerWidth);
 
         g.setColor(Color.white);
-        g.fillRect((int)ballX, (int) ballY, 16, 16);
+        g.fillRect((int)ballX, (int) ballY, ballSize, ballSize);
     }
 
     public static void main(String[ ] args){
