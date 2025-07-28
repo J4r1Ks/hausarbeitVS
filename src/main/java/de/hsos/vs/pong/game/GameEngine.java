@@ -7,6 +7,8 @@ import java.util.Arrays;
 
 public class GameEngine extends JPanel {
 
+    private byte choosePlayer = 2;
+
     private JFrame frame = new JFrame();
 
     private Color mainColor = new Color(20, 60, 100);
@@ -21,7 +23,13 @@ public class GameEngine extends JPanel {
     private int playerHeight = 120;
 
     private PlayerController player1 = new PlayerController(true);
+    private PlayerController player2 = new PlayerController(true);
+    private PlayerController player3 = new PlayerController(false);
+    private PlayerController player4 = new PlayerController(false);
     private int player1Position = 300;
+    private int player2Position = 300;
+    private int player3Position = 300;
+    private int player4Position = 300;
 
     public GameEngine() {
         frame.setTitle("Quong");
@@ -30,15 +38,19 @@ public class GameEngine extends JPanel {
         frame.setMinimumSize(new Dimension(1000, 800));
         this.setBackground(mainColor);
 
-        JLabel label = new JLabel("CHAT");
+        //Kaputt
+        /*JLabel label = new JLabel("CHAT");
         label.setVerticalAlignment(JLabel.TOP);
         label.setHorizontalAlignment(JLabel.RIGHT);
         label.setFont(new Font("Mono", Font.PLAIN, 30));
         label.setForeground(secondaryColor);
         label.setVisible(true);
-        frame.add(label);
+        frame.add(label);*/
 
         frame.addKeyListener(player1);
+        frame.addKeyListener(player2);
+        frame.addKeyListener(player3);
+        frame.addKeyListener(player4);
 
         frame.pack();
         frame.setVisible(true);
@@ -47,13 +59,44 @@ public class GameEngine extends JPanel {
 
     @Override
     public void update(Graphics g) {
-        super.update(g);
+        this.repaint();
         //this.paint(this.getGraphics());
-        if(player1.upPressed){
-            player1Position -= 20;
-        }else if(player1.downPressed){
-            player1Position += 20;
+        switch (choosePlayer) {
+            case 0:
+                player1Position = playerMovementVertical(player1, player1Position); break;
+            case 1:
+                player2Position = playerMovementVertical(player2, player2Position); break;
+            case 2:
+                player3Position = playerMovementHorizontal(player3, player3Position); break;
+            case 3:
+                player4Position = playerMovementHorizontal(player4, player4Position); break;
         }
+    }
+
+    private int playerMovementVertical(PlayerController player, int playerPosition) {
+        if(player.upPressed){
+            if(playerPosition-20 >= 0){
+                return playerPosition -= 20;
+            }
+        }else if(player.downPressed){
+            if(playerPosition+20 < 763-playerHeight){
+                return playerPosition += 20;
+            }
+        }
+        return playerPosition;
+    }
+
+    private int playerMovementHorizontal(PlayerController player, int playerPosition) {
+        if(player.leftPressed){
+            if(playerPosition-20 >= 0){
+                return playerPosition -= 20;
+            }
+        }else if(player.rightPressed){
+            if(playerPosition+20 <= 800-playerHeight){
+                return playerPosition += 20;
+            }
+        }
+        return playerPosition;
     }
 
     @Override
@@ -66,13 +109,13 @@ public class GameEngine extends JPanel {
         g.fillRect(0, player1Position, playerWidth, playerHeight);
 
         g.setColor(player2Color);
-        g.fillRect(800-playerWidth, 300, playerWidth, playerHeight);
+        g.fillRect(800-playerWidth, player2Position, playerWidth, playerHeight);
 
         g.setColor(player3Color);
-        g.fillRect(300, 0, playerHeight, playerWidth);
+        g.fillRect(player3Position, 0, playerHeight, playerWidth);
 
         g.setColor(player4Color);
-        g.fillRect(300, 751, playerHeight, playerWidth);
+        g.fillRect(player4Position, 751, playerHeight, playerWidth);
 
         g.setColor(Color.white);
         g.fillRect(400, 400, 16, 16);
