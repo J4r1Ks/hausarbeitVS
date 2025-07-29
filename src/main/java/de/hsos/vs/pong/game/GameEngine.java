@@ -9,23 +9,18 @@ public class GameEngine extends JPanel {
 
     private byte choosePlayer = 0;
 
-    private JFrame frame = new JFrame();
-
-    private Color mainColor = new Color(20, 60, 100);
-    private Color secondaryColor = new Color(235, 195, 155);
-
-    private Color player1Color = new Color(100, 20, 20);
-    private Color player2Color = new Color(20, 100, 20);
-    private Color player3Color = new Color(100, 100, 20);
-    private Color player4Color = new Color(100, 20, 100);
+    private final Color player1Color = new Color(100, 20, 20);
+    private final Color player2Color = new Color(20, 100, 20);
+    private final Color player3Color = new Color(100, 100, 20);
+    private final Color player4Color = new Color(100, 20, 100);
 
     private int playerWidth = 12;
     private int playerHeight = 120;
 
-    private PlayerController player1 = new PlayerController(true);
-    private PlayerController player2 = new PlayerController(true);
-    private PlayerController player3 = new PlayerController(false);
-    private PlayerController player4 = new PlayerController(false);
+    private PlayerController player1;
+    private PlayerController player2;
+    private PlayerController player3;
+    private PlayerController player4;
     private int player1Position = 300;
     private int player2Position = 300;
     private int player3Position = 300;
@@ -38,30 +33,30 @@ public class GameEngine extends JPanel {
     private float dirY = -0.5f;
     private float ballSpeed = 12;
 
-    public GameEngine() {
-        frame.setTitle("Quong");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setResizable(false);
-        frame.setMinimumSize(new Dimension(1000, 800));
-        this.setBackground(mainColor);
+    public GameEngine(PlayerController[] players) {
+        player1 = players[0];
+        player2 = players[1];
+        player3 = players[2];
+        player4 = players[3];
 
-        //Kaputt
-        /*JLabel label = new JLabel("CHAT");
+        JLabel label = new JLabel("CHAT");
         label.setVerticalAlignment(JLabel.TOP);
         label.setHorizontalAlignment(JLabel.RIGHT);
         label.setFont(new Font("Mono", Font.PLAIN, 30));
-        label.setForeground(secondaryColor);
+        label.setForeground(Color.BLUE);
         label.setVisible(true);
-        frame.add(label);*/
+        this.add(label);
+    }
 
-        frame.addKeyListener(player1);
-        frame.addKeyListener(player2);
-        frame.addKeyListener(player3);
-        frame.addKeyListener(player4);
+    public void start(){
+        long timer = System.currentTimeMillis();
 
-        frame.pack();
-        frame.setVisible(true);
-        frame.add(this);
+        while(true){
+            if(System.currentTimeMillis()-timer > 66){
+                timer = System.currentTimeMillis();
+                this.update(this.getGraphics());
+            }
+        }
     }
 
     @Override
@@ -156,20 +151,6 @@ public class GameEngine extends JPanel {
         ballY = 400;
     }
 
-    //Kaputt
-    private float directionChanger(float dir){
-        if(dir == -0.5f){
-            return -1;
-        }else if(dir == -1){
-            return -0.5f;
-        }else if(dir == 0.5f){
-            return 1;
-        }else if(dir == 1){
-            return 0.5f;
-        }
-        return dir;
-    }
-
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -190,19 +171,6 @@ public class GameEngine extends JPanel {
 
         g.setColor(Color.white);
         g.fillRect((int)ballX, (int) ballY, ballSize, ballSize);
-    }
-
-    public static void main(String[ ] args){
-        GameEngine game = new GameEngine();
-        long timer = System.currentTimeMillis();
-
-        while(true){
-            if(System.currentTimeMillis()-timer > 66){
-                timer = System.currentTimeMillis();
-                game.update(game.getGraphics());
-            }
-        }
-
     }
 }
 
