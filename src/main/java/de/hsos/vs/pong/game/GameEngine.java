@@ -17,6 +17,7 @@ public class GameEngine extends JPanel {
     private int playerWidth = 12;
     private int playerHeight = 120;
 
+    private int playerSpeed = 8;
     private PlayerController player1;
     private PlayerController player2;
     private PlayerController player3;
@@ -31,7 +32,7 @@ public class GameEngine extends JPanel {
     private float ballY = 400;
     private float dirX = -1;
     private float dirY = -0.5f;
-    private float ballSpeed = 12;
+    private float ballSpeed = 3;
 
     public GameEngine(PlayerController[] players) {
         player1 = players[0];
@@ -52,7 +53,7 @@ public class GameEngine extends JPanel {
         long timer = System.currentTimeMillis();
 
         while(true){
-            if(System.currentTimeMillis()-timer > 66){
+            if(System.currentTimeMillis()-timer > 12){
                 timer = System.currentTimeMillis();
                 this.update(this.getGraphics());
             }
@@ -77,12 +78,12 @@ public class GameEngine extends JPanel {
 
     private int playerMovementVertical(PlayerController player, int playerPosition) {
         if(player.upPressed){
-            if(playerPosition-20 >= 0){
-                return playerPosition -= 20;
+            if(playerPosition-playerSpeed >= 0){
+                return playerPosition -= playerSpeed;
             }
         }else if(player.downPressed){
-            if(playerPosition+20 < 763-playerHeight){
-                return playerPosition += 20;
+            if(playerPosition+playerSpeed < 763-playerHeight){
+                return playerPosition += playerSpeed;
             }
         }
         return playerPosition;
@@ -90,12 +91,12 @@ public class GameEngine extends JPanel {
 
     private int playerMovementHorizontal(PlayerController player, int playerPosition) {
         if(player.leftPressed){
-            if(playerPosition-20 >= 0){
-                return playerPosition -= 20;
+            if(playerPosition-playerSpeed >= 0){
+                return playerPosition -= playerSpeed;
             }
         }else if(player.rightPressed){
-            if(playerPosition+20 <= 800-playerHeight){
-                return playerPosition += 20;
+            if(playerPosition+playerSpeed <= 800-playerHeight){
+                return playerPosition += playerSpeed;
             }
         }
         return playerPosition;
@@ -107,18 +108,22 @@ public class GameEngine extends JPanel {
         if(collisionY(player1Position)){
             if(ballX < playerWidth){
                 dirX *= -1;
+                ballSpeed += 0.2f;
             }
         }if(collisionY(player2Position)){
             if(ballX >= 800 - playerWidth - ballSize){
                 dirX *= -1;
+                ballSpeed += 0.2f;
             }
         }if(collisionX(player3Position)){
             if(ballY < playerWidth){
                 dirY *= -1;
+                ballSpeed += 0.2f;
             }
         }if(collisionX(player4Position)){
             if(ballY > 763 - playerWidth - ballSize){
                 dirY *= -1;
+                ballSpeed += 0.2f;
             }
         }
         if(ballX < 0){
@@ -149,6 +154,7 @@ public class GameEngine extends JPanel {
     private void resetBall(){
         ballX = 400;
         ballY = 400;
+        ballSpeed = 3;
     }
 
     @Override
