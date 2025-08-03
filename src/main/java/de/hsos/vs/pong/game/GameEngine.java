@@ -35,18 +35,11 @@ public class GameEngine extends JPanel {
     private float ballSpeed = 3;
 
     public GameEngine(PlayerController[] players) {
+        this.setPreferredSize(new Dimension(800, 800));
         player1 = players[0];
         player2 = players[1];
         player3 = players[2];
         player4 = players[3];
-
-        JLabel label = new JLabel("CHAT");
-        label.setVerticalAlignment(JLabel.TOP);
-        label.setHorizontalAlignment(JLabel.RIGHT);
-        label.setFont(new Font("Mono", Font.PLAIN, 30));
-        label.setForeground(Color.BLUE);
-        label.setVisible(true);
-        this.add(label);
     }
 
     public void start(){
