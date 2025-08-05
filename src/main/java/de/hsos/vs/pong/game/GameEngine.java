@@ -7,27 +7,31 @@ import java.util.Arrays;
 
 public class GameEngine extends JPanel {
 
-    private byte choosePlayer = 0;
+    private final byte choosePlayer = 0;
 
     private final Color player1Color = new Color(100, 20, 20);
     private final Color player2Color = new Color(20, 100, 20);
     private final Color player3Color = new Color(100, 100, 20);
     private final Color player4Color = new Color(100, 20, 100);
 
-    private int playerWidth = 12;
-    private int playerHeight = 120;
+    private final int playerWidth = 12;
+    private final int playerHeight = 120;
 
-    private int playerSpeed = 8;
-    private PlayerController player1;
-    private PlayerController player2;
-    private PlayerController player3;
-    private PlayerController player4;
+    private final int playerSpeed = 8;
+    private final PlayerController player1;
+    private final PlayerController player2;
+    private final PlayerController player3;
+    private final PlayerController player4;
     private int player1Position = 300;
     private int player2Position = 300;
     private int player3Position = 300;
     private int player4Position = 300;
+    public int player1Score = 0;
+    public int player2Score = 0;
+    public int player3Score = 0;
+    public int player4Score = 0;
 
-    private int ballSize = 16;
+    private final int ballSize = 16;
     private float ballX = 400;
     private float ballY = 400;
     private float dirX = -1;
@@ -42,13 +46,14 @@ public class GameEngine extends JPanel {
         player4 = players[3];
     }
 
-    public void start(){
+    public void start(GameChat gameChat){
         long timer = System.currentTimeMillis();
 
         while(true){
             if(System.currentTimeMillis()-timer > 12){
                 timer = System.currentTimeMillis();
                 this.update(this.getGraphics());
+                gameChat.updateScore(player1Score, player2Score, player3Score, player4Score);
             }
         }
     }
@@ -67,6 +72,7 @@ public class GameEngine extends JPanel {
                 player4Position = playerMovementHorizontal(player4, player4Position); //break;
        // }
         ballMovement();
+        System.out.println(player1Score);
     }
 
     private int playerMovementVertical(PlayerController player, int playerPosition) {
@@ -121,28 +127,34 @@ public class GameEngine extends JPanel {
         }
         if(ballX < 0){
             resetBall();
+            player2Score += 1;
+            player3Score += 1;
+            player4Score += 1;
         }
         if(ballX > 800){
             resetBall();
+            player1Score += 1;
+            player3Score += 1;
+            player4Score += 1;
         }
         if(ballY < 0){
             resetBall();
+            player1Score += 1;
+            player2Score += 1;
+            player4Score += 1;
         }
         if(ballY > 763){
             resetBall();
+            player1Score += 1;
+            player2Score += 1;
+            player3Score += 1;
         }
     }
     private boolean collisionY(int playerPosition){
-        if(ballY+ballSize >= playerPosition && ballY <= playerPosition+playerHeight){
-            return true;
-        }
-        return false;
+        return ballY + ballSize >= playerPosition && ballY <= playerPosition + playerHeight;
     }
     private boolean collisionX(int playerPosition){
-        if(ballX+ballSize >= playerPosition && ballX <= playerPosition+playerHeight){
-            return true;
-        }
-        return false;
+        return ballX + ballSize >= playerPosition && ballX <= playerPosition + playerHeight;
     }
     private void resetBall(){
         ballX = 400;
