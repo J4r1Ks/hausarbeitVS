@@ -18,7 +18,7 @@ public class Game extends JFrame {
         this.setTitle("Quong");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setResizable(false);
-        this.setMinimumSize(new Dimension(1000, 800));
+        this.setMinimumSize(new Dimension(1000, 863));
 
         for(PlayerController player : players){
             this.addKeyListener(player);
@@ -26,11 +26,22 @@ public class Game extends JFrame {
         game = new GameEngine(players);
         gameChat = new GameChat();
 
-        this.pack();
-        this.setVisible(true);
-
+        JButton playButton = new JButton("Unpause");
+        playButton.addActionListener(e -> {
+            this.requestFocus();
+            game.paused = !game.paused;
+            if(game.paused){
+                playButton.setText("Unpause");
+            } else {
+                playButton.setText("Pause");
+            }
+        });
+        this.getContentPane().add(playButton, BorderLayout.NORTH);
         this.getContentPane().add(game, BorderLayout.WEST);
         this.getContentPane().add(gameChat, BorderLayout.EAST);
+
+        this.pack();
+        this.setVisible(true);
     }
 
     public static void main(String[ ] args){

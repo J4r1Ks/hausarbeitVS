@@ -3,10 +3,12 @@ package de.hsos.vs.pong.game;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.sql.SQLOutput;
 import java.util.Arrays;
 
 public class GameEngine extends JPanel {
 
+    public boolean paused = true;
     private final byte choosePlayer = 0;
 
     private final Color player1Color = new Color(100, 20, 20);
@@ -49,8 +51,9 @@ public class GameEngine extends JPanel {
     public void start(GameChat gameChat){
         long timer = System.currentTimeMillis();
 
-        while(true){
-            if(System.currentTimeMillis()-timer > 12){
+        while(winner()){
+            System.out.flush();
+            if(System.currentTimeMillis()-timer > 12 && !paused){
                 timer = System.currentTimeMillis();
                 this.update(this.getGraphics());
                 gameChat.updateScore(player1Score, player2Score, player3Score, player4Score);
@@ -72,7 +75,6 @@ public class GameEngine extends JPanel {
                 player4Position = playerMovementHorizontal(player4, player4Position); //break;
        // }
         ballMovement();
-        System.out.println(player1Score);
     }
 
     private int playerMovementVertical(PlayerController player, int playerPosition) {
@@ -81,7 +83,7 @@ public class GameEngine extends JPanel {
                 return playerPosition -= playerSpeed;
             }
         }else if(player.downPressed){
-            if(playerPosition+playerSpeed < 763-playerHeight){
+            if(playerPosition+playerSpeed < 800-playerHeight){
                 return playerPosition += playerSpeed;
             }
         }
@@ -120,18 +122,18 @@ public class GameEngine extends JPanel {
                 ballSpeed += 0.2f;
             }
         }if(collisionX(player4Position)){
-            if(ballY > 763 - playerWidth - ballSize){
+            if(ballY > 800 - playerWidth - ballSize){
                 dirY *= -1;
                 ballSpeed += 0.2f;
             }
         }
-        if(ballX < 0){
+        if(ballX + ballSize < 0){
             resetBall();
             player2Score += 1;
             player3Score += 1;
             player4Score += 1;
         }
-        if(ballX > 800){
+        if(ballX + ballSize > 800){
             resetBall();
             player1Score += 1;
             player3Score += 1;
@@ -143,7 +145,7 @@ public class GameEngine extends JPanel {
             player2Score += 1;
             player4Score += 1;
         }
-        if(ballY > 763){
+        if(ballY > 800){
             resetBall();
             player1Score += 1;
             player2Score += 1;
@@ -162,6 +164,23 @@ public class GameEngine extends JPanel {
         ballSpeed = 3;
     }
 
+    private boolean winner(){
+        if(player1Score > 9){
+            System.out.println("Player 1 won!");
+            return false;
+        }else if(player2Score > 9){
+            System.out.println("Player 2 won!");
+            return false;
+        }else if(player3Score > 9){
+            System.out.println("Player 3 won!");
+            return false;
+        }else if(player4Score > 9){
+            System.out.println("Player 4 won!");
+            return false;
+        }
+        return true;
+    }
+
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -178,7 +197,7 @@ public class GameEngine extends JPanel {
         g.fillRect(player3Position, 0, playerHeight, playerWidth);
 
         g.setColor(player4Color);
-        g.fillRect(player4Position, 751, playerHeight, playerWidth);
+        g.fillRect(player4Position, 800-playerWidth, playerHeight, playerWidth);
 
         g.setColor(Color.white);
         g.fillRect((int)ballX, (int) ballY, ballSize, ballSize);
