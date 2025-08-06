@@ -1,18 +1,23 @@
 package de.hsos.vs.pong.game;
 
+import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
 public class PlayerController extends KeyAdapter {
 
-    private boolean vertical;
+    public boolean vertical;
     public boolean upPressed = false;
     public boolean downPressed = false;
     public boolean leftPressed = false;
     public boolean rightPressed = false;
+    public int playerPosition = 300;
+    public int playerScore = 0;
+    public Color playerColor;
 
-    public PlayerController(boolean vertical) {
+    public PlayerController(boolean vertical, Color playerColor) {
         this.vertical = vertical;
+        this.playerColor = playerColor;
     }
 
     @Override

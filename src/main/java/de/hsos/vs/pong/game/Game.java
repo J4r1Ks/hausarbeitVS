@@ -9,10 +9,10 @@ public class Game extends JFrame {
 
     private GameChat gameChat;
 
-    private PlayerController[] players = {new PlayerController(true),
-                                            new PlayerController(true),
-                                            new PlayerController(false),
-                                            new PlayerController(false)};
+    private PlayerController[] players = {new PlayerController(true, new Color(100, 20, 20)),
+                                            new PlayerController(true, new Color(20, 100, 20)),
+                                            new PlayerController(false, new Color(100, 100, 20)),
+                                            new PlayerController(false, new Color(100, 20, 100))};
 
     public Game() {
         this.setTitle("Quong");
@@ -24,7 +24,7 @@ public class Game extends JFrame {
             this.addKeyListener(player);
         }
         game = new GameEngine(players);
-        gameChat = new GameChat();
+        gameChat = new GameChat(players);
 
         JButton playButton = new JButton("Unpause");
         playButton.addActionListener(e -> {
