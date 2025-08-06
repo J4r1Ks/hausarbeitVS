@@ -12,17 +12,14 @@ public class User {
     private String username;
 
     @Column(nullable = false)
-    private String passwordHash;
+    private String password;
 
-    @Column(nullable = false)
-    private String salt;
 
     public User() {}
 
     public User(String username, String passwordHash, String salt) {
         this.username = username;
-        this.passwordHash = passwordHash;
-        this.salt = salt;
+        this.password = passwordHash;
     }
 
     public long getId() {
@@ -37,19 +34,12 @@ public class User {
         this.username = username;
     }
 
-    public String getPasswordHash() {
-        return passwordHash;
+    public String getPassword() {
+        return password;
     }
 
-    public void setPasswordHash(String passwordHash) {
-        this.passwordHash = passwordHash;
+    public void setPassword(String passwordHash) {
+        this.password = passwordHash;
     }
 
-    public String getSalt() {
-        return salt;
-    }
-
-    public void setSalt(String salt) {
-        this.salt = salt;
-    }
 }
