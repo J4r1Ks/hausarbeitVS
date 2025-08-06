@@ -11,9 +11,6 @@ public class GameEngine extends JPanel {
     public boolean paused = true;
     private final byte choosePlayer = 0;
 
-    private final int playerWidth = 12;
-    private final int playerHeight = 120;
-
     private PlayerController[] players;
 
     private final int ballSize = 16;
@@ -32,7 +29,6 @@ public class GameEngine extends JPanel {
         long timer = System.currentTimeMillis();
 
         while(winner()){
-            System.out.flush();
             if(System.currentTimeMillis()-timer > 12 && !paused){
                 timer = System.currentTimeMillis();
                 this.update(this.getGraphics());
@@ -46,7 +42,7 @@ public class GameEngine extends JPanel {
         this.repaint();
 
         for(int i = 0; i < players.length; i++){
-            players[i].changePlayerPosition(playerHeight);
+            players[i].changePlayerPosition();
         }
 
         ballMovement();
@@ -55,27 +51,17 @@ public class GameEngine extends JPanel {
     private void ballMovement(){
         ballX += dirX * ballSpeed;
         ballY += dirY * ballSpeed;
-        if(collisionY(players[0].playerPosition)){
-            if(ballX < playerWidth){
+
+        for(int i = 0; i < players.length; ++i){
+            if(players[i].vertical && players[i].collision(ballX, ballY, ballSize)){
                 dirX *= -1;
                 ballSpeed += 0.2f;
-            }
-        }if(collisionY(players[1].playerPosition)){
-            if(ballX >= 800 - playerWidth - ballSize){
-                dirX *= -1;
-                ballSpeed += 0.2f;
-            }
-        }if(collisionX(players[2].playerPosition)){
-            if(ballY < playerWidth){
-                dirY *= -1;
-                ballSpeed += 0.2f;
-            }
-        }if(collisionX(players[3].playerPosition)){
-            if(ballY > 800 - playerWidth - ballSize){
+            }else if (players[i].collision(ballX, ballY, ballSize)){
                 dirY *= -1;
                 ballSpeed += 0.2f;
             }
         }
+
         if(ballX + ballSize < 0){
             resetBall(0);
         }
@@ -89,12 +75,7 @@ public class GameEngine extends JPanel {
             resetBall(3);
         }
     }
-    private boolean collisionY(int playerPosition){
-        return ballY + ballSize >= playerPosition && ballY <= playerPosition + playerHeight;
-    }
-    private boolean collisionX(int playerPosition){
-        return ballX + ballSize >= playerPosition && ballX <= playerPosition + playerHeight;
-    }
+
     private void resetBall(int i){
         int skip = i;
         ballX = 400;
@@ -122,17 +103,10 @@ public class GameEngine extends JPanel {
         g.setColor(Color.black);
         g.fillRect(0, 0, 800, 800);
 
-        g.setColor(players[0].playerColor);
-        g.fillRect(0, players[0].playerPosition, playerWidth, playerHeight);
-
-        g.setColor(players[1].playerColor);
-        g.fillRect(800-playerWidth, players[1].playerPosition, playerWidth, playerHeight);
-
-        g.setColor(players[2].playerColor);
-        g.fillRect(players[2].playerPosition, 0, playerHeight, playerWidth);
-
-        g.setColor(players[3].playerColor);
-        g.fillRect(players[3].playerPosition, 800-playerWidth, playerHeight, playerWidth);
+        for(int i = 0; i < players.length; i++){
+            g.setColor(players[i].playerColor);
+            g.fillRect(players[i].playerPositionX, players[i].playerPositionY, players[i].playerWidth, players[i].playerHeight);
+        }
 
         g.setColor(Color.white);
         g.fillRect((int)ballX, (int) ballY, ballSize, ballSize);

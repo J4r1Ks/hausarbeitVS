@@ -9,10 +9,10 @@ public class Game extends JFrame {
 
     private GameChat gameChat;
 
-    private PlayerController[] players = {new PlayerController(true, new Color(100, 20, 20)),
-                                            new PlayerController(true, new Color(20, 100, 20)),
-                                            new PlayerController(false, new Color(100, 100, 20)),
-                                            new PlayerController(false, new Color(100, 20, 100))};
+    private PlayerController[] players = {new PlayerController(true, new Color(100, 20, 20), 120, 12, 0, 300),
+                                            new PlayerController(true, new Color(20, 100, 20), 120, 12, 800-12, 300),
+                                            new PlayerController(false, new Color(100, 100, 20), 12, 120, 300, 0),
+                                            new PlayerController(false, new Color(100, 20, 100), 12, 120, 300, 800-12)};
 
     public Game() {
         this.setTitle("Quong");

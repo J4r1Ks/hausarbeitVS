@@ -11,26 +11,46 @@ public class PlayerController extends KeyAdapter {
     public boolean downPressed = false;
     public boolean leftPressed = false;
     public boolean rightPressed = false;
-    public int playerPosition = 300;
+    public int playerPositionX;
+    public int playerPositionY;
+    public final int playerWidth;
+    public final int playerHeight;
     public int playerScore = 0;
     public Color playerColor;
     private final int playerSpeed = 8;
 
-    public PlayerController(boolean vertical, Color playerColor) {
+    public PlayerController(boolean vertical, Color playerColor, int playerHeight, int playerWidth, int playerPositionX, int playerPositionY) {
         this.vertical = vertical;
         this.playerColor = playerColor;
+        this.playerWidth =  playerWidth;
+        this.playerHeight = playerHeight;
+        this.playerPositionX = playerPositionX;
+        this.playerPositionY = playerPositionY;
     }
 
-    public void changePlayerPosition(int playerHeight){
-        if(upPressed || leftPressed){
+    public void changePlayerPosition(){
+        if(vertical){
+            playerPositionY = setPosition(playerPositionY);
+        }else{
+            playerPositionX = setPosition(playerPositionX);
+        }
+
+    }
+    private int setPosition(int playerPosition){
+        if(vertical ? upPressed : leftPressed){
             if(playerPosition-playerSpeed > 0){
-                playerPosition -= playerSpeed;
+                return playerPosition - playerSpeed;
             }
-        }else if(downPressed || rightPressed){
-            if(playerPosition+playerSpeed < 800-playerHeight){
-                playerPosition += playerSpeed;
+        }else if(vertical ? downPressed : rightPressed){
+            if(playerPosition+playerSpeed < 800-(vertical ? playerHeight : playerWidth)){
+                return playerPosition + playerSpeed;
             }
         }
+        return playerPosition;
+    }
+
+    public boolean collision(float ballX, float ballY, int ballSize){
+        return ballX + ballSize >= playerPositionX && ballX <= playerPositionX + playerWidth && ballY + ballSize >= playerPositionY && ballY <= playerPositionY + playerHeight;
     }
 
     @Override
