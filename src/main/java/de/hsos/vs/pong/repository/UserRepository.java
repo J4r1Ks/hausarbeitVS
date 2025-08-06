@@ -1,4 +1,4 @@
-package de.hsos.vs.pong.auth;
+package de.hsos.vs.pong.repository;
 
 import de.hsos.vs.pong.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
