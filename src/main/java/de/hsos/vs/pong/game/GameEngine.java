@@ -14,7 +14,6 @@ public class GameEngine extends JPanel {
     private final int playerWidth = 12;
     private final int playerHeight = 120;
 
-    private final int playerSpeed = 8;
     private PlayerController[] players;
 
     private final int ballSize = 16;
@@ -47,36 +46,10 @@ public class GameEngine extends JPanel {
         this.repaint();
 
         for(int i = 0; i < players.length; i++){
-            players[i].playerPosition = players[i].vertical ? playerMovementVertical(players[i]) : playerMovementHorizontal(players[i]);
+            players[i].changePlayerPosition(playerHeight);
         }
 
         ballMovement();
-    }
-
-    private int playerMovementVertical(PlayerController player) {
-        if(player.upPressed){
-            if(player.playerPosition-playerSpeed >= 0){
-                return player.playerPosition -= playerSpeed;
-            }
-        }else if(player.downPressed){
-            if(player.playerPosition+playerSpeed < 800-playerHeight){
-                return player.playerPosition += playerSpeed;
-            }
-        }
-        return player.playerPosition;
-    }
-
-    private int playerMovementHorizontal(PlayerController player) {
-        if(player.leftPressed){
-            if(player.playerPosition-playerSpeed >= 0){
-                return player.playerPosition -= playerSpeed;
-            }
-        }else if(player.rightPressed){
-            if(player.playerPosition+playerSpeed <= 800-playerHeight){
-                return player.playerPosition += playerSpeed;
-            }
-        }
-        return player.playerPosition;
     }
 
     private void ballMovement(){

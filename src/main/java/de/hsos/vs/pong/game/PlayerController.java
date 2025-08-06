@@ -14,10 +14,23 @@ public class PlayerController extends KeyAdapter {
     public int playerPosition = 300;
     public int playerScore = 0;
     public Color playerColor;
+    private final int playerSpeed = 8;
 
     public PlayerController(boolean vertical, Color playerColor) {
         this.vertical = vertical;
         this.playerColor = playerColor;
+    }
+
+    public void changePlayerPosition(int playerHeight){
+        if(upPressed || leftPressed){
+            if(playerPosition-playerSpeed > 0){
+                playerPosition -= playerSpeed;
+            }
+        }else if(downPressed || rightPressed){
+            if(playerPosition+playerSpeed < 800-playerHeight){
+                playerPosition += playerSpeed;
+            }
+        }
     }
 
     @Override
