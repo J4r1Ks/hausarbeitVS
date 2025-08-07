@@ -5,16 +5,23 @@ import java.awt.*;
 
 public class Game extends JFrame {
 
+    public int numberOfPlayers = 1;
+
     private GameEngine game;
 
     private GameChat gameChat;
 
-    private PlayerController[] players = {new PlayerController(true, new Color(100, 20, 20), 120, 12, 0, 300),
-                                            new PlayerController(true, new Color(20, 100, 20), 120, 12, 800-12, 300),
-                                            new PlayerController(false, new Color(100, 100, 20), 12, 120, 300, 0),
-                                            new PlayerController(false, new Color(100, 20, 100), 12, 120, 300, 800-12)};
+    private PlayerController[] players;
 
     public Game() {
+        players = new PlayerController[numberOfPlayers];
+        switch(numberOfPlayers){
+            case 4: players[3] = new PlayerController(false, new Color(100, 20, 100), 12, 120, 300, 800-12);
+            case 3: players[2] = new PlayerController(false, new Color(100, 100, 20), 12, 120, 300, 0);
+            case 2: players[1] = new PlayerController(true, new Color(20, 100, 20), 120, 12, 800-12, 300);
+            case 1: players[0] = new PlayerController(true, new Color(100, 20, 20), 120, 12, 0, 300);
+        }
+
         this.setTitle("Quong");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setResizable(false);
@@ -23,7 +30,7 @@ public class Game extends JFrame {
         for(PlayerController player : players){
             this.addKeyListener(player);
         }
-        game = new GameEngine(players);
+        game = new GameEngine(players, numberOfPlayers);
         gameChat = new GameChat(players);
 
         JButton playButton = new JButton("Unpause");

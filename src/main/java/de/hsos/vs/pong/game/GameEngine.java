@@ -10,6 +10,7 @@ public class GameEngine extends JPanel {
 
     public boolean paused = true;
     private final byte choosePlayer = 0;
+    private int numberOfPlayers;
 
     private PlayerController[] players;
 
@@ -20,9 +21,10 @@ public class GameEngine extends JPanel {
     private float dirY = -0.5f;
     private float ballSpeed = 3;
 
-    public GameEngine(PlayerController[] players) {
+    public GameEngine(PlayerController[] players, int numberOfPlayers) {
         this.setPreferredSize(new Dimension(800, 800));
         this.players = players;
+        this.numberOfPlayers = numberOfPlayers;
     }
 
     public void start(GameChat gameChat){
@@ -65,13 +67,19 @@ public class GameEngine extends JPanel {
         if(ballX + ballSize < 0){
             resetBall(0);
         }
-        if(ballX + ballSize > 800){
+        if(numberOfPlayers < 2 && ballX + ballSize > 800){
+            dirX *= -1;
+        }else if(ballX + ballSize > 800){
             resetBall(1);
         }
-        if(ballY < 0){
+        if(numberOfPlayers < 3 && ballY < 0){
+            dirY *= -1;
+        }else if(ballY < 0){
             resetBall(2);
         }
-        if(ballY > 800){
+        if(numberOfPlayers < 4 && ballY + ballSize > 800){
+            dirY *= -1;
+        }else if(ballY > 800){
             resetBall(3);
         }
     }
@@ -82,8 +90,8 @@ public class GameEngine extends JPanel {
         ballY = 400;
         ballSpeed = 3;
         ++i;
-        for(; i % 4 != skip; ++i){
-            players[i % 4].playerScore += 1;
+        for(; i % numberOfPlayers != skip; ++i){
+            players[i % numberOfPlayers].playerScore += 1;
         }
     }
 
