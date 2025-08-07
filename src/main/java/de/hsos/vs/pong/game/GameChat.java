@@ -34,9 +34,29 @@ public class GameChat extends JPanel {
         label.setVisible(true);
         this.add(label, BorderLayout.NORTH);
 
-        JTextArea textArea = new JTextArea("CHAT");
+        JTextArea textArea = new JTextArea("Moin");
         textArea.setPreferredSize(new Dimension(186, 64));
         this.add(textArea, BorderLayout.PAGE_END);
+
+
+        JPanel comments = new JPanel();
+        comments.setLayout(new BoxLayout(comments, BoxLayout.PAGE_AXIS));
+        comments.setBackground(mainColor);
+
+        JButton senden = new JButton("Senden");
+        senden.setPreferredSize(new Dimension(186, 20));
+        senden.addActionListener(e -> {
+            JLabel message = new JLabel(textArea.getText());
+            message.setFont(new Font("Mono", Font.PLAIN, 16));
+            message.setForeground(secondaryColor);
+            message.setVisible(true);
+            comments.add(message, BorderLayout.PAGE_END);
+        });
+        this.add(senden, BorderLayout.PAGE_END);
+
+        JScrollPane scrollPane = new JScrollPane(comments);
+        scrollPane.setPreferredSize(new Dimension(186, 620));
+        this.add(scrollPane, BorderLayout.CENTER);
 
     }
 
