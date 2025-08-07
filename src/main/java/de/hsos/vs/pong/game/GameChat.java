@@ -51,6 +51,7 @@ public class GameChat extends JPanel {
             message.setForeground(secondaryColor);
             message.setVisible(true);
             comments.add(message, BorderLayout.PAGE_END);
+            textArea.setText(textArea.getText());
         });
         this.add(senden, BorderLayout.PAGE_END);
 
