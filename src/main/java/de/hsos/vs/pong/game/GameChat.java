@@ -8,44 +8,25 @@ public class GameChat extends JPanel {
     private final Color secondaryColor = new Color(235, 195, 155);
     private final Color mainColor = new Color(20, 60, 100);
 
-    private final Color player1Color = new Color(100, 20, 20);
-    private final Color player2Color = new Color(20, 100, 20);
-    private final Color player3Color = new Color(100, 100, 20);
-    private final Color player4Color = new Color(100, 20, 100);
+    public JLabel[] playerScores;
 
-    public JLabel player1Score = new JLabel("0", SwingConstants.CENTER);
-    public JLabel player2Score = new JLabel("0", SwingConstants.CENTER);
-    public JLabel player3Score = new JLabel("0", SwingConstants.CENTER);
-    public JLabel player4Score = new JLabel("0", SwingConstants.CENTER);
+    private PlayerController[] players;
 
-    public GameChat() {
+    public GameChat(PlayerController[] players) {
         this.setPreferredSize(new Dimension(186, 800));
         this.setBackground(mainColor);
 
-        player1Score.setFont(new Font("Mono", Font.PLAIN, 30));
-        player1Score.setForeground(player1Color);
-        player1Score.setVisible(true);
-        player1Score.setPreferredSize(new Dimension(20, 30));
-        this.add(player1Score);
+        this.players = players;
 
-        player2Score.setFont(new Font("Mono", Font.PLAIN, 30));
-        player2Score.setForeground(player2Color);
-        player2Score.setVisible(true);
-        player2Score.setPreferredSize(new Dimension(20, 30));
-        this.add(player2Score);
-
-        player3Score.setFont(new Font("Mono", Font.PLAIN, 30));
-        player3Score.setForeground(player3Color);
-        player3Score.setVisible(true);
-        player3Score.setPreferredSize(new Dimension(20, 30));
-        this.add(player3Score);
-
-        player4Score.setFont(new Font("Mono", Font.PLAIN, 30));
-        player4Score.setForeground(player4Color);
-        player4Score.setVisible(true);
-        player4Score.setPreferredSize(new Dimension(20, 30));
-        this.add(player4Score);
-
+        playerScores = new JLabel[players.length];
+        for(int i = 0; i < players.length; i++) {
+            playerScores[i] = new JLabel("0", SwingConstants.CENTER);
+            playerScores[i].setFont(new Font("Mono", Font.PLAIN, 30));
+            playerScores[i].setForeground(players[i].playerColor);
+            playerScores[i].setVisible(true);
+            playerScores[i].setPreferredSize(new Dimension(20, 30));
+            this.add(playerScores[i]);
+        }
 
         JLabel label = new JLabel("CHAT", SwingConstants.CENTER);
         label.setFont(new Font("Mono", Font.PLAIN, 30));
@@ -53,17 +34,37 @@ public class GameChat extends JPanel {
         label.setVisible(true);
         this.add(label, BorderLayout.NORTH);
 
-        JTextArea textArea = new JTextArea("CHAT");
+        JTextArea textArea = new JTextArea("Moin");
         textArea.setPreferredSize(new Dimension(186, 64));
         this.add(textArea, BorderLayout.PAGE_END);
 
+
+        JPanel comments = new JPanel();
+        comments.setLayout(new BoxLayout(comments, BoxLayout.PAGE_AXIS));
+        comments.setBackground(mainColor);
+
+        JButton senden = new JButton("Senden");
+        senden.setPreferredSize(new Dimension(186, 20));
+        senden.addActionListener(e -> {
+            JLabel message = new JLabel(textArea.getText());
+            message.setFont(new Font("Mono", Font.PLAIN, 16));
+            message.setForeground(secondaryColor);
+            message.setVisible(true);
+            comments.add(message, BorderLayout.PAGE_END);
+            textArea.setText(textArea.getText());
+        });
+        this.add(senden, BorderLayout.PAGE_END);
+
+        JScrollPane scrollPane = new JScrollPane(comments);
+        scrollPane.setPreferredSize(new Dimension(186, 620));
+        this.add(scrollPane, BorderLayout.CENTER);
+
     }
 
-    public void updateScore(int player1ScoreInt, int player2ScoreInt, int player3ScoreInt, int player4ScoreInt) {
-        player1Score.setText(""+player1ScoreInt);
-        player2Score.setText(""+player2ScoreInt);
-        player3Score.setText(""+player3ScoreInt);
-        player4Score.setText(""+player4ScoreInt);
+    public void updateScore() {
+        for(int i = 0; i < playerScores.length; i++) {
+            playerScores[i].setText(""+players[i].playerScore);
+        }
     }
 
 }
