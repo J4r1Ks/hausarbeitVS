@@ -35,31 +35,44 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                // WICHTIG: CSRF für Entwicklung deaktivieren
+                .csrf(csrf -> csrf.disable())
+
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                                "/css/**",
-                                "/js/**",
-                                "/images/**",
+                                "/",
                                 "/register",
                                 "/login",
-                                "/perform_login"
+                                "/perform_login",
+                                "/error"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
+
+                // Headers für H2 Console
+                /*
+                .headers(headers -> headers
+                        .frameOptions().sameOrigin()
+                )
+                 */
+
                 .formLogin(form -> form
                         .loginPage("/login")
                         .loginProcessingUrl("/perform_login")
                         .defaultSuccessUrl("/lobby", true)
+                        .failureUrl("/login?error")
                         .permitAll()
                 )
+
                 .logout(logout -> logout
                         .logoutUrl("/perform_logout")
                         .logoutSuccessUrl("/login?logout")
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID")
                         .permitAll()
                 );
 
         http.authenticationProvider(authProvider());
         return http.build();
     }
-
 }
