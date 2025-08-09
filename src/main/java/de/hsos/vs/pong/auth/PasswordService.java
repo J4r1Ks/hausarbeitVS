@@ -20,7 +20,7 @@ public class PasswordService {
         return passwordEncoder.encode(password + pepper);
     }
 
-    public boolean mathesWithPepper(String rawPassword, String encodedPassword) {
+    public boolean matchesWithPepper(String rawPassword, String encodedPassword) {
         return passwordEncoder.matches(rawPassword + pepper, encodedPassword);
     }
 }
