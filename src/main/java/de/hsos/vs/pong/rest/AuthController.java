@@ -1,55 +1,52 @@
 package de.hsos.vs.pong.rest;
 
-import de.hsos.vs.pong.auth.PasswordService;
+import de.hsos.vs.pong.auth.PepperAwarePasswordEncoder;
 import de.hsos.vs.pong.repository.UserRepository;
 import de.hsos.vs.pong.model.User;
-import jakarta.servlet.http.HttpServlet;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
 public class AuthController {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final PepperAwarePasswordEncoder passwordEncoder;
 
-    @Autowired
-    private PasswordService passwordService;
-
-    public AuthController(UserRepository userRepository, PasswordService passwordService) {
+    public AuthController(UserRepository userRepository,
+                          PepperAwarePasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
-        this.passwordService = passwordService;
+        this.passwordEncoder = passwordEncoder;
     }
 
+    @GetMapping("/login")
+    public String loginPage(@RequestParam(value = "error", required = false) String error,
+                            @RequestParam(value = "logout", required = false) String logout,
+                            Model model) {
+        if (error != null) model.addAttribute("error", "Ungültige Anmeldedaten.");
+        if (logout != null) model.addAttribute("msg", "Erfolgreich ausgeloggt.");
+        return "login"; // view: /WEB-INF/views/login.jsp
+    }
 
     @GetMapping("/register")
-    public String showRegisterForm() {
+    public String registerForm(Model model) {
+        model.addAttribute("user", new User());
         return "register";
     }
 
     @PostMapping("/register")
-    public String register(@RequestParam String username, @RequestParam String password) {
-        if(userRepository.findByUsername(username).isPresent()) {
-            return "redirect:/register?error";
+    public String registerSubmit(@ModelAttribute User user, Model model) {
+        if (userRepository.findByUsername(user.getUsername()).isPresent()) {
+            model.addAttribute("error", "Benutzername bereits vorhanden");
+            return "register";
         }
-
-        String hashed = passwordService.encodeWithPepper(password);
-        User user = new User();
-        user.setUsername(username);
-        user.setPassword(hashed);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
-        return "redirect:/login";
-    }
-
-    @GetMapping("/login")
-    public String loginForm() {
-        return "login";
+        return "redirect:/login?registered";
     }
 
     @GetMapping("/lobby")
-    public String homePage() {
-        return "lobby"; // Geschützte Seite
+    public String lobby() {
+        return "lobby";
     }
 }
