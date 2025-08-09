@@ -1,11 +1,23 @@
 package de.hsos.vs.pong.game;
 
+
+import jakarta.websocket.OnOpen;
+import jakarta.websocket.Session;
+import jakarta.websocket.server.PathParam;
+import jakarta.websocket.server.ServerEndpoint;
+
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
+@ServerEndpoint(value = "/quong/{userID}")
 public class Game extends JFrame {
 
-    public int numberOfPlayers = 3;
+    private static final List<Session> sessions = new ArrayList<>();
+
+
+    public int numberOfPlayers = 4;
 
     private GameEngine game;
 
@@ -51,9 +63,14 @@ public class Game extends JFrame {
         this.setVisible(true);
     }
 
-    public static void main(String[ ] args){
-        Game game = new Game();
-        game.game.start(game.gameChat);
+    @OnOpen
+    public void onOpen(Session session, @PathParam("userID") int userID) {
+        game.choosePlayer = userID;
+        game.start(gameChat);
+    }
 
+    public static void main(String[ ] args){
+        //Game game = new Game();
+        //game.game.start(game.gameChat);
     }
 }
