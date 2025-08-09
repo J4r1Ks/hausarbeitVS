@@ -5,7 +5,7 @@ import java.awt.*;
 
 public class Game extends JFrame {
 
-    public int numberOfPlayers = 1;
+    public int numberOfPlayers = 3;
 
     private GameEngine game;
 

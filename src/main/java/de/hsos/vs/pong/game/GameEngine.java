@@ -43,9 +43,10 @@ public class GameEngine extends JPanel {
     public void update(Graphics g) {
         this.repaint();
 
-        for(int i = 0; i < players.length; i++){
+        /*for(int i = 0; i < players.length; i++){
             players[i].changePlayerPosition();
-        }
+        }*/
+        players[choosePlayer].changePlayerPosition();
 
         ballMovement();
     }
