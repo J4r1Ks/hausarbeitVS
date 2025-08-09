@@ -10,16 +10,18 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
-public class AuthController extends HttpServlet {
+public class AuthController {
 
     @Autowired
     private UserRepository userRepository;
 
     @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
     private PasswordService passwordService;
+
+    public AuthController(UserRepository userRepository, PasswordService passwordService) {
+        this.userRepository = userRepository;
+        this.passwordService = passwordService;
+    }
 
 
     @GetMapping("/register")
@@ -29,11 +31,14 @@ public class AuthController extends HttpServlet {
 
     @PostMapping("/register")
     public String register(@RequestParam String username, @RequestParam String password) {
-        String encodedPassword = passwordEncoder.encode(password);
-        String pepperPassword = passwordService.encodeWithPepper(encodedPassword);
+        if(userRepository.findByUsername(username).isPresent()) {
+            return "redirect:/register?error";
+        }
+
+        String hashed = passwordService.encodeWithPepper(password);
         User user = new User();
         user.setUsername(username);
-        user.setPassword(pepperPassword);
+        user.setPassword(hashed);
         userRepository.save(user);
         return "redirect:/login";
     }
