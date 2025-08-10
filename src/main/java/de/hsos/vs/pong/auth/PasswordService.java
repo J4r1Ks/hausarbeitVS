@@ -1,40 +1,26 @@
 package de.hsos.vs.pong.auth;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
-import java.util.Base64;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 
-/*
- * Tutorial für salt und pepper: https://www.baeldung.com/java-password-hashing
- */
-public class PasswordUtil {
+@Service
+public class PasswordService {
 
-    private String pepper; // Sollte eventuell noch verbessert werden
-    private final SecureRandom random = new SecureRandom();
+    @Value("${security.pepper}")
+    private String pepper;
 
-    public PasswordUtil(String pepper) {
-        this.pepper = pepper;
-    }
-    public String generateSalt() {
-        byte[] salt = new byte[16];
-        random.nextBytes(salt);
-        return Base64.getEncoder().encodeToString(salt);
+    private final PasswordEncoder passwordEncoder;
+
+    public PasswordService(PasswordEncoder passwordEncoder) {
+        this.passwordEncoder = passwordEncoder;
     }
 
-    public String hashPassword(String password, String salt) {
-        try {
-            MessageDigest md = MessageDigest.getInstance("SHA-256");
-            String input = salt + password + pepper;
-            byte[] hashed = md.digest(input.getBytes());
-            return Base64.getEncoder().encodeToString(hashed);
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException("SHA-256 not available", e);
-        }
+    public String encodeWithPepper(String password) {
+        return passwordEncoder.encode(password + pepper);
     }
 
-    // Überprüft ein Klartext-Passwort gegen gespeicherte Hash+Salt
-    public boolean verifyPassword(String password, String salt, String hash) {
-        return hashPassword(password, salt).equals(hash);
+    public boolean matchesWithPepper(String rawPassword, String encodedPassword) {
+        return passwordEncoder.matches(rawPassword + pepper, encodedPassword);
     }
 }
