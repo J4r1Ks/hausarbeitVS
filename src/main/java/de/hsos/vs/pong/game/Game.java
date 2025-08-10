@@ -1,10 +1,10 @@
 package de.hsos.vs.pong.game;
 
 
-import jakarta.websocket.OnOpen;
-import jakarta.websocket.Session;
-import jakarta.websocket.server.PathParam;
-import jakarta.websocket.server.ServerEndpoint;
+import javax.websocket.OnOpen;
+import javax.websocket.Session;
+import javax.websocket.server.PathParam;
+import javax.websocket.server.ServerEndpoint;
 
 import javax.swing.*;
 import java.awt.*;
@@ -65,6 +65,7 @@ public class Game extends JFrame {
 
     @OnOpen
     public void onOpen(Session session, @PathParam("userID") int userID) {
+        System.out.println("Verbindung geöffnet: " + session.getId());
         game.choosePlayer = userID;
         game.start(gameChat);
     }
