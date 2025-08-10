@@ -2,14 +2,11 @@ package de.hsos.vs.pong.game;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.sql.SQLOutput;
-import java.util.Arrays;
 
 public class GameEngine extends JPanel {
 
     public boolean paused = true;
-    private final byte choosePlayer = 0;
+    public int choosePlayer;
     private int numberOfPlayers;
 
     private PlayerController[] players;
