@@ -1,7 +1,10 @@
 package de.hsos.vs.pong.config;
 
+import de.hsos.vs.pong.auth.PepperAwarePasswordEncoder;
+import de.hsos.vs.pong.auth.UserDetailsServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -12,38 +15,64 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Configuration
 public class SecurityConfig {
 
+    private final UserDetailsServiceImpl userDetailsService;
+    private final PepperAwarePasswordEncoder passwordEncoder;
+
+    public SecurityConfig(UserDetailsServiceImpl userDetailsService,
+                          PepperAwarePasswordEncoder passwordEncoder) {
+        this.userDetailsService = userDetailsService;
+        this.passwordEncoder = passwordEncoder;
+    }
+
+    @Bean
+    public DaoAuthenticationProvider authProvider() {
+        DaoAuthenticationProvider p = new DaoAuthenticationProvider();
+        p.setUserDetailsService(userDetailsService);
+        p.setPasswordEncoder(passwordEncoder);
+        return p;
+    }
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                // WICHTIG: CSRF für Entwicklung deaktivieren
+                //.csrf(csrf -> csrf.disable())
+
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/login", "/register").permitAll()
+                        .requestMatchers(
+                                "/",
+                                "/register",
+                                "/login",
+                                "/perform_login",
+                                "/error"
+                        ).permitAll()
                         .anyRequest().authenticated()
                 )
+
+                // Headers für H2 Console
+                /*
+                .headers(headers -> headers
+                        .frameOptions().sameOrigin()
+                )
+                 */
+
                 .formLogin(form -> form
                         .loginPage("/login")
-                        .defaultSuccessUrl("/home", true)
-                        .failureUrl("/login?error=true")
+                        .loginProcessingUrl("/perform_login")
+                        .defaultSuccessUrl("/lobby", true)
+                        .failureUrl("/login?error")
                         .permitAll()
                 )
+
                 .logout(logout -> logout
-                        .logoutUrl("/logout")
-                        .logoutSuccessUrl("/login?logout=true")
-                        .invalidateHttpSession(true) // Session löschen
+                        .logoutUrl("/perform_logout")
+                        .logoutSuccessUrl("/login?logout")
+                        .invalidateHttpSession(true)
                         .deleteCookies("JSESSIONID")
-                )
-                .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED) // Nur wenn nötig
-                        .invalidSessionUrl("/login?session=invalid")
-                        .maximumSessions(1) // nur eine Session pro Benutzer
-                        .expiredUrl("/login?session=expired")
+                        .permitAll()
                 );
 
+        http.authenticationProvider(authProvider());
         return http.build();
-    }
-
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
     }
 }

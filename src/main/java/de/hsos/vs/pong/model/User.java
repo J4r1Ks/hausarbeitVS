@@ -1,6 +1,8 @@
 package de.hsos.vs.pong.model;
 import jakarta.persistence.*;
 
+import java.util.Objects;
+
 @Entity
 @Table(name = "users")
 public class User {
@@ -41,5 +43,16 @@ public class User {
     public void setPassword(String passwordHash) {
         this.password = passwordHash;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof User)) return false;
+        User u = (User) o;
+        return Objects.equals(id, u.id);
+    }
+
+    @Override
+    public int hashCode() { return Objects.hashCode(id); }
 
 }
