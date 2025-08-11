@@ -27,12 +27,14 @@
     let websocket;
     let numberOfPlayers;
 
-    function  disableAllPlayerIDs(){
+    function disableAllPlayerIDs(){
         let playerIDs = document.getElementsByName("playerID");
 
         playerIDs.forEach((playerID) => {
-            playerID.disabled  = true;
+            playerID.disabled = true;
+            playerID.checked = false;
         });
+        playerIDs[0].checked = true;
     }
 
     function setPlayerSelection(){
@@ -67,6 +69,10 @@
             websocket.send(numberOfPlayers);
             console.log("Game created.");
         };
+
+        websocket.onclose = function (event) {
+            console.log("Websocket disconntected.");
+        }
 
     }
 
