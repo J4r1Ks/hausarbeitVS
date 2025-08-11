@@ -26,20 +26,30 @@
 <script>
     let websocket;
 
-    //Funzt noch nicht
-    function setPlayerSelection(){
-        let playerSelections = document.getElementsByName("playerID");
+    function  disableAllPlayerIDs(){
         let playerIDs = document.getElementsByName("playerID");
 
         playerIDs.forEach((playerID) => {
-            playerID.readOnly  = true;
+            playerID.disabled  = true;
         });
+    }
 
-        let number = 0;
+    function setPlayerSelection(){
+        let playerSelections = document.getElementsByName("numberOfPlayers");
+        let playerIDs = document.getElementsByName("playerID");
+
+        disableAllPlayerIDs();
+
+        let number;
         playerSelections.forEach((playerSelection) => {
-            playerIDs[number].readOnly = false;
-            number++;
+            if(playerSelection.checked){
+                number = playerSelection.value;
+            }
         });
+        for(let i = 0; i < number; i++){
+            playerIDs[i].disabled = false;
+        }
+
 
     }
 
@@ -59,6 +69,8 @@
         };
 
     }
+
+    disableAllPlayerIDs();
 </script>
 
 <form action="${pageContext.request.contextPath}/perform_logout" method="post">
