@@ -49,8 +49,6 @@
         for(let i = 0; i < numberOfPlayers; i++){
             playerIDs[i].disabled = false;
         }
-
-
     }
 
     function createWebsocket(url){
@@ -67,6 +65,7 @@
         websocket.onopen = function (event) {
             console.log("Websocket conntected.");
             websocket.send(numberOfPlayers);
+            console.log("Game created.");
         };
 
     }
