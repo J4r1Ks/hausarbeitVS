@@ -25,6 +25,7 @@
 
 <script>
     let websocket;
+    let numberOfPlayers;
 
     function  disableAllPlayerIDs(){
         let playerIDs = document.getElementsByName("playerID");
@@ -40,13 +41,12 @@
 
         disableAllPlayerIDs();
 
-        let number;
         playerSelections.forEach((playerSelection) => {
             if(playerSelection.checked){
-                number = playerSelection.value;
+                numberOfPlayers = playerSelection.value;
             }
         });
-        for(let i = 0; i < number; i++){
+        for(let i = 0; i < numberOfPlayers; i++){
             playerIDs[i].disabled = false;
         }
 
@@ -66,6 +66,7 @@
 
         websocket.onopen = function (event) {
             console.log("Websocket conntected.");
+            websocket.send(numberOfPlayers);
         };
 
     }

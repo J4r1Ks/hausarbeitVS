@@ -14,21 +14,26 @@ import java.util.List;
 public class PongWebSocket {
 
     private static final List<Session> sessions = new ArrayList<>();
+    private Game game;
 
     @OnOpen
-    public void onOpen(Session session, @PathParam("userID") int userID) {
+    public void onOpen(Session session) {
         sessions.add(session);
-        //Ganz ganz wichtig, damit das Pong Fenster sich oeffnet
-        System.setProperty("java.awt.headless", "false");
-        if (!GraphicsEnvironment.isHeadless()) {
-            Game game = new Game();
-            game.game.choosePlayer = userID;
-            game.game.start(game.gameChat);
-        }
     }
 
     @OnMessage
-    public void onMessage(String message, Session session) {
+    public void onMessage(String message, Session session, @PathParam("userID") int userID) {
+        //Spielinitialisierung
+        if(game == null){
+            //Ganz ganz wichtig, damit das Pong Fenster sich oeffnet
+            System.setProperty("java.awt.headless", "false");
+            if (!GraphicsEnvironment.isHeadless()) {
+                game = new Game(Integer.parseInt(message));
+                game.game.choosePlayer = userID;
+                game.game.start(game.gameChat);
+            }
+        }
+
 
     }
 }

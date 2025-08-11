@@ -5,15 +5,13 @@ import java.awt.*;
 
 public class Game extends JFrame {
 
-    public int numberOfPlayers = 4;
-
     public GameEngine game;
 
     public GameChat gameChat;
 
     private PlayerController[] players;
 
-    public Game() {
+    public Game(int numberOfPlayers) {
         players = new PlayerController[numberOfPlayers];
         switch(numberOfPlayers){
             case 4: players[3] = new PlayerController(false, new Color(100, 20, 100), 12, 120, 300, 800-12);
@@ -52,7 +50,7 @@ public class Game extends JFrame {
     }
 
     public static void main(String[ ] args){
-        Game game = new Game();
+        Game game = new Game(4);
         game.game.start(game.gameChat);
     }
 }
