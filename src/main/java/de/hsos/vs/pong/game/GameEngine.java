@@ -64,6 +64,20 @@ public class GameEngine extends JPanel {
             gameData.put("player4Pos", players[3].playerPositionX);
         return gameData;
     }
+    public void setJsonObject(JSONObject gameData){
+        ballX = gameData.getFloat("ballX");
+        ballY = gameData.getFloat("ballY");
+        dirX = gameData.getFloat("dirX");
+        dirY = gameData.getFloat("dirY");
+        ballSpeed = gameData.getFloat("ballSpeed");
+        players[0].playerPositionY = gameData.getInt("player1Pos");
+        if(gameData.has("player2Pos"))
+            players[1].playerPositionY = gameData.getInt("player2Pos");
+        if(gameData.has("player3Pos"))
+            players[2].playerPositionX = gameData.getInt("player3Pos");
+        if(gameData.has("player4Pos"))
+            players[3].playerPositionX = gameData.getInt("player4Pos");
+    }
 
     @Override
     public void update(Graphics g) {

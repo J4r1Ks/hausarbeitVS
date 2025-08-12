@@ -9,12 +9,14 @@ import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @ServerEndpoint(value = "/quong/{userID}")
 public class PongWebSocket {
 
     private static final List<Session> sessions = new ArrayList<>();
-    private Game game;
+    private static final Map<Integer, Game> games = new ConcurrentHashMap<>();
 
     @OnOpen
     public void onOpen(Session session) {
@@ -43,16 +45,18 @@ public class PongWebSocket {
     public void onMessage(String message, Session session, @PathParam("userID") int userID) {
         try {
             //Spielinitialisierung
-            if(game == null){
+            if(games.get(userID) == null){
                 //Ganz ganz wichtig, damit das Pong Fenster sich oeffnet
                 System.setProperty("java.awt.headless", "false");
                 if (!GraphicsEnvironment.isHeadless()) {
-                    game = new Game(Integer.parseInt(message));
-                    game.game.choosePlayer = userID;
-                    game.game.start(game.gameChat, session);
+                    new Thread(() -> {
+                        games.put(userID, new Game(Integer.parseInt(message)));
+                        games.get(userID).game.choosePlayer = userID;
+                        games.get(userID).game.start(games.get(userID).gameChat, session);
+                    }).start();
                 }
             }else{
-                System.out.println("Eine Antwort?");
+                games.get(userID).game.setJsonObject(new JSONObject(message));
             }
         } catch (Exception e) {
             e.printStackTrace();
