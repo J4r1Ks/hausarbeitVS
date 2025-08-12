@@ -70,9 +70,20 @@
             console.log("Game created.");
         };
 
+        websocket.onmessage = function (event) {
+            try {
+                //const message = JSON.parse(event.data);
+                console.log(event.data);
+                websocket.send("Test");
+            }catch (e) {
+                console.error("Error occured while parsing the message: ", e, event.data);
+            }
+
+        };
+
         websocket.onclose = function (event) {
             console.log("Websocket disconntected.");
-        }
+        };
 
     }
 

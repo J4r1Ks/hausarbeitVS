@@ -1,7 +1,11 @@
 package de.hsos.vs.pong.game;
 
+import jakarta.websocket.Session;
+import org.json.JSONObject;
+
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
 
 public class GameEngine extends JPanel {
 
@@ -12,11 +16,11 @@ public class GameEngine extends JPanel {
     private PlayerController[] players;
 
     private final int ballSize = 16;
-    private float ballX = 400;
-    private float ballY = 400;
-    private float dirX = -1;
-    private float dirY = -0.5f;
-    private float ballSpeed = 3;
+    public float ballX = 400;
+    public float ballY = 400;
+    public float dirX = -1;
+    public float dirY = -0.5f;
+    public float ballSpeed = 3;
 
     public GameEngine(PlayerController[] players, int numberOfPlayers) {
         this.setPreferredSize(new Dimension(800, 800));
@@ -24,7 +28,7 @@ public class GameEngine extends JPanel {
         this.numberOfPlayers = numberOfPlayers;
     }
 
-    public void start(GameChat gameChat){
+    public void start(GameChat gameChat, Session session){
         long timer = System.currentTimeMillis();
 
         while(winner()){
@@ -32,8 +36,33 @@ public class GameEngine extends JPanel {
                 timer = System.currentTimeMillis();
                 this.update(this.getGraphics());
                 gameChat.updateScore();
+                try {
+                    JSONObject gameData = getJsonObject();
+                    session.getBasicRemote().sendText(gameData.toString());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
             }
         }
+    }
+
+    private JSONObject getJsonObject() {
+        JSONObject gameData = new JSONObject();
+        if(choosePlayer == 0){
+            gameData.put("player1Pos", players[0].playerPositionY);
+            gameData.put("ballX", ballX);
+            gameData.put("ballY", ballY);
+            gameData.put("dirX", dirX);
+            gameData.put("dirY", dirY);
+            gameData.put("ballSpeed", ballSpeed);
+        }
+        if(choosePlayer == 1)
+            gameData.put("player2Pos", players[1].playerPositionY);
+        if(choosePlayer == 2)
+            gameData.put("player3Pos", players[2].playerPositionX);
+        if(choosePlayer == 3)
+            gameData.put("player4Pos", players[3].playerPositionX);
+        return gameData;
     }
 
     @Override
