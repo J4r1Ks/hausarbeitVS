@@ -7,8 +7,5 @@ public class GameDataPackage {
     public float dirY;
     public float ballSpeed;
 
-    public int player1Pos;
-    public int player2Pos;
-    public int player3Pos;
-    public int player4Pos;
+    public int[] playerPos =  new int[4];
 }
