@@ -6,6 +6,7 @@ import jakarta.websocket.server.ServerEndpoint;
 import org.json.JSONObject;
 
 import java.awt.*;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,20 +41,23 @@ public class PongWebSocket {
 
     @OnMessage
     public void onMessage(String message, Session session, @PathParam("userID") int userID) {
-        //Spielinitialisierung
-        if(game == null){
-            //Ganz ganz wichtig, damit das Pong Fenster sich oeffnet
-            System.setProperty("java.awt.headless", "false");
-            if (!GraphicsEnvironment.isHeadless()) {
-                game = new Game(Integer.parseInt(message));
-                game.game.choosePlayer = userID;
-                game.game.start(game.gameChat);
+        try {
+            //Spielinitialisierung
+            if(game == null){
+                //Ganz ganz wichtig, damit das Pong Fenster sich oeffnet
+                System.setProperty("java.awt.headless", "false");
+                if (!GraphicsEnvironment.isHeadless()) {
+                    game = new Game(Integer.parseInt(message));
+                    game.game.choosePlayer = userID;
+                    game.game.start(game.gameChat, session);
+                }
+            }else{
+                System.out.println("Eine Antwort?");
             }
-        }else{
-
-
-
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
     }
 
     @OnClose

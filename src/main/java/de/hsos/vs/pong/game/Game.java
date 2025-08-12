@@ -50,7 +50,7 @@ public class Game extends JFrame {
     }
 
     public static void main(String[ ] args){
-        Game game = new Game(4);
-        game.game.start(game.gameChat);
+        //Game game = new Game(4);
+        //game.game.start(game.gameChat);
     }
 }
