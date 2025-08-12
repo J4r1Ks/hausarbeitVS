@@ -37,8 +37,10 @@ public class GameEngine extends JPanel {
                 this.update(this.getGraphics());
                 gameChat.updateScore();
                 try {
-                    JSONObject gameData = getJsonObject();
-                    session.getBasicRemote().sendText(gameData.toString());
+                    //synchronized (session) {
+                        JSONObject gameData = getGameData();
+                        session.getBasicRemote().sendText(gameData.toString());
+                    //}
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -46,7 +48,7 @@ public class GameEngine extends JPanel {
         }
     }
 
-    private JSONObject getJsonObject() {
+    private JSONObject getGameData() {
         JSONObject gameData = new JSONObject();
         if(choosePlayer == 0){
             gameData.put("player1Pos", players[0].playerPositionY);
@@ -64,19 +66,19 @@ public class GameEngine extends JPanel {
             gameData.put("player4Pos", players[3].playerPositionX);
         return gameData;
     }
-    public void setJsonObject(JSONObject gameData){
-        ballX = gameData.getFloat("ballX");
-        ballY = gameData.getFloat("ballY");
-        dirX = gameData.getFloat("dirX");
-        dirY = gameData.getFloat("dirY");
-        ballSpeed = gameData.getFloat("ballSpeed");
-        players[0].playerPositionY = gameData.getInt("player1Pos");
-        if(gameData.has("player2Pos"))
-            players[1].playerPositionY = gameData.getInt("player2Pos");
-        if(gameData.has("player3Pos"))
-            players[2].playerPositionX = gameData.getInt("player3Pos");
-        if(gameData.has("player4Pos"))
-            players[3].playerPositionX = gameData.getInt("player4Pos");
+    public void setGameData(GameDataPackage gdp){
+        ballX = gdp.ballX;
+        ballY = gdp.ballY;
+        dirX = gdp.dirX;
+        dirY = gdp.dirY;
+        ballSpeed = gdp.ballSpeed;
+        for(int i = 0; i < numberOfPlayers; i++){
+            if(players[i].vertical){
+                players[i].playerPositionY = gdp.playerPos[i];
+            }else{
+                players[i].playerPositionX = gdp.playerPos[i];
+            }
+        }
     }
 
     @Override
@@ -88,7 +90,8 @@ public class GameEngine extends JPanel {
         }*/
         players[choosePlayer].changePlayerPosition();
 
-        ballMovement();
+        if(choosePlayer == 0)
+            ballMovement();
     }
 
     private void ballMovement(){

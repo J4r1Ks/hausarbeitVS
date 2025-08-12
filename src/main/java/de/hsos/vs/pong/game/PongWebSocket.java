@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 @ServerEndpoint(value = "/quong/{userID}")
@@ -17,6 +18,7 @@ public class PongWebSocket {
 
     private static final List<Session> sessions = new ArrayList<>();
     private static final Map<Integer, Game> games = new ConcurrentHashMap<>();
+    private static final GameDataPackage gameDataPackage = new GameDataPackage();
 
     @OnOpen
     public void onOpen(Session session) {
@@ -56,7 +58,25 @@ public class PongWebSocket {
                     }).start();
                 }
             }else{
-                games.get(userID).game.setJsonObject(new JSONObject(message));
+                /*synchronized (sessions) {
+                    games.get(userID).game.setJsonObject(new JSONObject(message));
+                }*/
+                JSONObject data = new JSONObject(message);
+                if(session.getId().equals("0")){
+                    gameDataPackage.ballX = data.getFloat("ballX");
+                    gameDataPackage.ballY = data.getFloat("ballY");
+                    gameDataPackage.dirX = data.getFloat("dirX");
+                    gameDataPackage.dirY = data.getFloat("dirY");
+                    gameDataPackage.ballSpeed = data.getFloat("ballSpeed");
+                    gameDataPackage.playerPos[0] = data.getInt("player1Pos");
+                }
+                if(data.has("player2Pos"))
+                    gameDataPackage.playerPos[1] = data.getInt("player2Pos");
+                if(data.has("player3Pos"))
+                    gameDataPackage.playerPos[2] = data.getInt("player3Pos");
+                if(data.has("player4Pos"))
+                    gameDataPackage.playerPos[3] = data.getInt("player4Pos");
+                games.get(userID).game.setGameData(gameDataPackage);
             }
         } catch (Exception e) {
             e.printStackTrace();
