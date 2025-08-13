@@ -44,7 +44,8 @@ public class SecurityConfig {
                                 "/register",
                                 "/login",
                                 "/perform_login",
-                                "/error"
+                                "/error",
+                                "/quong"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )

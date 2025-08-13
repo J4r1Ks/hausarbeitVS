@@ -20,7 +20,7 @@
     <input type="radio" id="playerID" name="playerID" value="2"><span>2</span>
     <input type="radio" id="playerID" name="playerID" value="3"><span>3</span>
 </fieldset>
-<button onclick="createWebsocket('quong/')">Create Game</button>
+<button onclick="createWebsocket('quong')">Create Game</button>
 
 
 <script>
@@ -57,7 +57,7 @@
         let playerIDs = document.getElementsByName("playerID");
         playerIDs.forEach((playerID) => {
             if(playerID.checked){
-                url += playerID.value;
+                //url = playerID.value;
                 return 0;
             }
         });

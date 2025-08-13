@@ -22,10 +22,11 @@ public class GameEngine extends JPanel {
     public float dirY = -0.5f;
     public float ballSpeed = 3;
 
-    public GameEngine(PlayerController[] players, int numberOfPlayers) {
+    public GameEngine(PlayerController[] players, int numberOfPlayers, int choosePlayer) {
         this.setPreferredSize(new Dimension(800, 800));
         this.players = players;
         this.numberOfPlayers = numberOfPlayers;
+        this.choosePlayer = choosePlayer;
     }
 
     public void start(GameChat gameChat, Session session){

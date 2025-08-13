@@ -11,7 +11,7 @@ public class Game extends JFrame {
 
     private PlayerController[] players;
 
-    public Game(int numberOfPlayers) {
+    public Game(int numberOfPlayers, int choosePlayer) {
         players = new PlayerController[numberOfPlayers];
         switch(numberOfPlayers){
             case 4: players[3] = new PlayerController(false, new Color(100, 20, 100), 12, 120, 300, 800-12);
@@ -28,7 +28,7 @@ public class Game extends JFrame {
         for(PlayerController player : players){
             this.addKeyListener(player);
         }
-        game = new GameEngine(players, numberOfPlayers);
+        game = new GameEngine(players, numberOfPlayers, choosePlayer);
         gameChat = new GameChat(players);
 
         JButton playButton = new JButton("Unpause");
@@ -47,10 +47,5 @@ public class Game extends JFrame {
 
         this.pack();
         this.setVisible(true);
-    }
-
-    public static void main(String[ ] args){
-        //Game game = new Game(4);
-        //game.game.start(game.gameChat);
     }
 }
