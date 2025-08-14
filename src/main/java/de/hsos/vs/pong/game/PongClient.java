@@ -5,13 +5,14 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.concurrent.CountDownLatch;
 
 @ClientEndpoint
 public class PongClient {
 
     private Game game;
     private Thread gameThread;
-    private static boolean running = true;
+    private static CountDownLatch latch = new CountDownLatch(1);
 
     @OnOpen
     public void onOpen(Session session) {
@@ -35,7 +36,7 @@ public class PongClient {
                     game.game.start(game.gameChat, session);
                 });
                 gameThread.start();
-                running = false;
+                latch.countDown();
             } else if(json.getString("type").equals("setData")){
                 GameDataPackage gameDataPackage = new GameDataPackage();
                 gameDataPackage.setValues(json);
@@ -47,7 +48,7 @@ public class PongClient {
     public static void main(String[] args) throws Exception {
         WebSocketContainer container = ContainerProvider.getWebSocketContainer();
         container.connectToServer(new PongClient(), URI.create("ws://192.168.178.47:8080/quong"));
-        while (running) {}
+        latch.await();
     }
 }
 
