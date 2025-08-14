@@ -6,6 +6,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @ServerEndpoint(value = "/quong")
 public class PongServer {
@@ -64,7 +65,7 @@ public class PongServer {
                         s.getBasicRemote().sendText(json.toString());
                     }
                 }else{*/
-                    s.getBasicRemote().sendText(message);
+                s.getBasicRemote().sendText(message);
                 //}
             }
         } catch (Exception e) {
