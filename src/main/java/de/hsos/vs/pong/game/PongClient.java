@@ -44,6 +44,17 @@ public class PongClient {
         }
     }
 
+    @OnClose
+    public void onClose(Session session) {
+        try {
+            JSONObject json = new JSONObject();
+            json.put("type", "clientDisconnect");
+            session.getBasicRemote().sendText(json.toString());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public static void main(String[] args) throws Exception {
         WebSocketContainer container = ContainerProvider.getWebSocketContainer();
         container.connectToServer(new PongClient(), URI.create("ws://192.168.178.47:8080/quong"));
