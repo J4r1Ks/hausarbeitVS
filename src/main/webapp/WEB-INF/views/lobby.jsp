@@ -141,7 +141,7 @@
 
         websocket.onmessage = function (event) {
             try {
-                console.log(event.data);
+                //console.log(event.data);
                 let data = JSON.parse(event.data);
                 if(data.type === "giveValues" && playerID < 4){
                     websocket.send('{"type":"startGame", "numberOfPlayers":'+numberOfPlayers+', "playerID":'+playerID+'}');

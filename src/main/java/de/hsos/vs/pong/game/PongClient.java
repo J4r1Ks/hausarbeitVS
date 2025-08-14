@@ -28,7 +28,6 @@ public class PongClient {
 
     @OnMessage
     public void onMessage(String message, Session session) {
-        System.out.println(message);
         if(message.startsWith("{")) {
             JSONObject json = new JSONObject(message);
             if(json.getString("type").equals("startGame") && gameThread == null) {
