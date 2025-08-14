@@ -1,4 +1,4 @@
-package de.hsos.vs.pong.auth;
+package de.hsos.vs.pong.service;
 
 import de.hsos.vs.pong.model.User;
 import de.hsos.vs.pong.repository.UserRepository;

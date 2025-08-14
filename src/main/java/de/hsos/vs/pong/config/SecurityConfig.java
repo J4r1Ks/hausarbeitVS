@@ -1,16 +1,12 @@
 package de.hsos.vs.pong.config;
 
 import de.hsos.vs.pong.auth.PepperAwarePasswordEncoder;
-import de.hsos.vs.pong.auth.UserDetailsServiceImpl;
+import de.hsos.vs.pong.service.UserDetailsServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 public class SecurityConfig {
@@ -51,9 +47,9 @@ public class SecurityConfig {
                                 "/perform_login",
                                 "/error",
                                 "/js/**",
-                                "/quong"
+                                "/quong" // <- muss noch angeguckt werden, wie man das authorisiert bekommt.
                         ).permitAll()
-                       // .requestMatchers("/api/chat/**").authenticated()
+                        //.requestMatchers("/api/chat/**").authenticated()
                        // .requestMatchers("/quong/**").authenticated()
                         .anyRequest().authenticated()
                 )

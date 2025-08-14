@@ -1,4 +1,4 @@
-package de.hsos.vs.pong.rest;
+package de.hsos.vs.pong.controller;
 
 import de.hsos.vs.pong.auth.PepperAwarePasswordEncoder;
 import de.hsos.vs.pong.repository.UserRepository;

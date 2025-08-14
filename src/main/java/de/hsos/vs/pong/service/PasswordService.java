@@ -1,4 +1,4 @@
-package de.hsos.vs.pong.auth;
+package de.hsos.vs.pong.service;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
