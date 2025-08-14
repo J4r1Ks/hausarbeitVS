@@ -5,7 +5,7 @@ import java.awt.*;
 
 public class GameChat extends JPanel {
 
-    private final Color secondaryColor = new Color(235, 195, 155);
+    //private final Color secondaryColor = new Color(235, 195, 155);
     private final Color mainColor = new Color(20, 60, 100);
 
     public JLabel[] playerScores;
@@ -28,7 +28,8 @@ public class GameChat extends JPanel {
             this.add(playerScores[i]);
         }
 
-        JLabel label = new JLabel("CHAT", SwingConstants.CENTER);
+        //UI für den in-game chat, wurde gestrichen, da chat auf die weboberfläche implementiert wurde
+        /*JLabel label = new JLabel("CHAT", SwingConstants.CENTER);
         label.setFont(new Font("Mono", Font.PLAIN, 30));
         label.setForeground(secondaryColor);
         label.setVisible(true);
@@ -57,7 +58,7 @@ public class GameChat extends JPanel {
 
         JScrollPane scrollPane = new JScrollPane(comments);
         scrollPane.setPreferredSize(new Dimension(186, 620));
-        this.add(scrollPane, BorderLayout.CENTER);
+        this.add(scrollPane, BorderLayout.CENTER);*/
 
     }
 

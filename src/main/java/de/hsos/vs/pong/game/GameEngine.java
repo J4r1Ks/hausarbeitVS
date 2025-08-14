@@ -105,10 +105,10 @@ public class GameEngine extends JPanel {
         for(int i = 0; i < players.length; ++i){
             if(players[i].vertical && players[i].collision(ballX, ballY, ballSize)){
                 dirX *= -1;
-                ballSpeed += 0.2f;
+                ballSpeed += 0.5f;
             }else if (players[i].collision(ballX, ballY, ballSize)){
                 dirY *= -1;
-                ballSpeed += 0.2f;
+                ballSpeed += 0.5f;
             }
         }
 
@@ -136,7 +136,7 @@ public class GameEngine extends JPanel {
         int skip = i;
         ballX = 400;
         ballY = 400;
-        ballSpeed = 3;
+        ballSpeed = 8;
         ++i;
         for(; i % numberOfPlayers != skip; ++i){
             players[i % numberOfPlayers].playerScore += 1;

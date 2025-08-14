@@ -107,6 +107,11 @@
     }
 
     function createWebsocket(url){
+        if(websocket != null) {
+            websocket.close();
+            playerID = 0;
+        }
+
         websocket = new WebSocket(url);
 
         websocket.onopen = function (event) {
@@ -116,6 +121,7 @@
         };
 
         websocket.onmessage = function (event) {
+            console.log(event.data);
             try {
                 let data = JSON.parse(event.data);
                 if(data.type === "giveValues" && playerID < 4){
