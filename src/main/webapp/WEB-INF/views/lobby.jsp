@@ -47,17 +47,17 @@
 <div>
     <span>Number of players</span>
     <fieldset onchange="setPlayerSelection()">
-        <input type="radio" id="numberOfPlayers1" name="numberOfPlayers" value="1"><span>1</span>
-        <input type="radio" id="numberOfPlayers2" name="numberOfPlayers" value="2"><span>2</span>
-        <input type="radio" id="numberOfPlayers3" name="numberOfPlayers" value="3"><span>3</span>
-        <input type="radio" id="numberOfPlayers4" name="numberOfPlayers" value="4"><span>4</span>
+        <input type="radio" id="numberOfPlayers" name="numberOfPlayers" value="1"><span>1</span>
+        <input type="radio" id="numberOfPlayers" name="numberOfPlayers" value="2"><span>2</span>
+        <input type="radio" id="numberOfPlayers" name="numberOfPlayers" value="3"><span>3</span>
+        <input type="radio" id="numberOfPlayers" name="numberOfPlayers" value="4"><span>4</span>
     </fieldset>
     <span>playerID</span>
     <fieldset>
-        <input type="radio" id="playerID0" name="playerID" value="0"><span>0</span>
-        <input type="radio" id="playerID1" name="playerID" value="1"><span>1</span>
-        <input type="radio" id="playerID2" name="playerID" value="2"><span>2</span>
-        <input type="radio" id="playerID3" name="playerID" value="3"><span>3</span>
+        <input type="radio" id="playerID" name="playerID" value="0"><span>0</span>
+        <input type="radio" id="playerID" name="playerID" value="1"><span>1</span>
+        <input type="radio" id="playerID" name="playerID" value="2"><span>2</span>
+        <input type="radio" id="playerID" name="playerID" value="3"><span>3</span>
     </fieldset>
     <button onclick="createWebsocket('quong')">Create Game</button>
 </div>
