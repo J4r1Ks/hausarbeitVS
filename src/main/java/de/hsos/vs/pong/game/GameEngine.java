@@ -69,7 +69,7 @@ public class GameEngine extends JPanel {
         return gameData;
     }
     public void setGameData(JSONObject json){
-        if(json.has("player1Pos")){
+        if(json.has("player1Pos") && choosePlayer != 0){
             ballX = json.getFloat("ballX");
             ballY = json.getFloat("ballY");
             dirX = json.getFloat("dirX");
@@ -77,11 +77,11 @@ public class GameEngine extends JPanel {
             ballSpeed = json.getFloat("ballSpeed");
             players[0].playerPositionY = json.getInt("player1Pos");
         }
-        if(json.has("player2Pos"))
+        if(json.has("player2Pos") && choosePlayer != 1)
             players[1].playerPositionY = json.getInt("player2Pos");
-        if(json.has("player3Pos"))
+        if(json.has("player3Pos") && choosePlayer != 2)
             players[2].playerPositionX = json.getInt("player3Pos");
-        if(json.has("player4Pos"))
+        if(json.has("player4Pos") && choosePlayer != 3)
             players[3].playerPositionX = json.getInt("player4Pos");
     }
 

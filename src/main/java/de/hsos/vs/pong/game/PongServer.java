@@ -64,6 +64,13 @@ public class PongServer {
                     return;
                 }
             }*/
+            if(message.startsWith("{")){
+                JSONObject jsonObject = new JSONObject(message);
+                if(jsonObject.getString("type").equals("getData")){
+                    System.out.println(message);
+                    return;
+                }
+            }
             for(Session s : sessions){
                 s.getBasicRemote().sendText(message);
             }
