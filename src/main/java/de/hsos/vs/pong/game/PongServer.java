@@ -41,32 +41,31 @@ public class PongServer {
     @OnMessage
     public void onMessage(String message, Session session) {
         try {
-            //JSONObject data = new JSONObject(message);
-            /*if(session.getId().equals("0")){
-                gameDataPackage.ballX = data.getFloat("ballX");
-                gameDataPackage.ballY = data.getFloat("ballY");
-                gameDataPackage.dirX = data.getFloat("dirX");
-                gameDataPackage.dirY = data.getFloat("dirY");
-                gameDataPackage.ballSpeed = data.getFloat("ballSpeed");
-                gameDataPackage.playerPos[0] = data.getInt("player1Pos");
-            }
-            if(data.has("player2Pos"))
-                gameDataPackage.playerPos[1] = data.getInt("player2Pos");
-            if(data.has("player3Pos"))
-                gameDataPackage.playerPos[2] = data.getInt("player3Pos");
-            if(data.has("player4Pos"))
-                gameDataPackage.playerPos[3] = data.getInt("player4Pos");
-            games.get(userID).game.setGameData(gameDataPackage);*/
-            for(Session s : sessions){
-                //s.getBasicRemote().sendText(data.toString());
-                /*if(message.startsWith("{")){
-                    JSONObject json = new JSONObject(message);
-                    if(json.getString("type").equals("getData")) {
-                        s.getBasicRemote().sendText(json.toString());
+            if(message.startsWith("{")){
+                JSONObject data = new JSONObject(message);
+                if(data.getString("type").equals("getData")){
+                    if(data.has("player1Pos")){
+                        gameDataPackage.ballX = data.getFloat("ballX");
+                        gameDataPackage.ballY = data.getFloat("ballY");
+                        gameDataPackage.dirX = data.getFloat("dirX");
+                        gameDataPackage.dirY = data.getFloat("dirY");
+                        gameDataPackage.ballSpeed = data.getFloat("ballSpeed");
+                        gameDataPackage.playerPos[0] = data.getInt("player1Pos");
                     }
-                }else{*/
+                    if(data.has("player2Pos"))
+                        gameDataPackage.playerPos[1] = data.getInt("player2Pos");
+                    if(data.has("player3Pos"))
+                        gameDataPackage.playerPos[2] = data.getInt("player3Pos");
+                    if(data.has("player4Pos"))
+                        gameDataPackage.playerPos[3] = data.getInt("player4Pos");
+                    for(Session s : sessions){
+                        s.getBasicRemote().sendText(data.toString());
+                    }
+                    return;
+                }
+            }
+            for(Session s : sessions){
                 s.getBasicRemote().sendText(message);
-                //}
             }
         } catch (Exception e) {
             e.printStackTrace();

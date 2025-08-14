@@ -147,7 +147,10 @@
                     websocket.send('{"type":"startGame", "numberOfPlayers":'+numberOfPlayers+', "playerID":'+playerID+'}');
                     ++playerID;
                 }else if(data.type === "getData"){
-                    data.type = "setData";
+                    //data.type = "setData";
+                    websocket.send(JSON.stringify(data));
+                }else if(data.type === "setData"){
+                    //data.type = "setData";
                     websocket.send(JSON.stringify(data));
                 }
             }catch (e) {
