@@ -45,7 +45,7 @@ public class PongClient {
 
     public static void main(String[] args) throws Exception {
         WebSocketContainer container = ContainerProvider.getWebSocketContainer();
-        container.connectToServer(new PongClient(), URI.create("ws://169.254.72.225:8080/quong"));
+        container.connectToServer(new PongClient(), URI.create("ws://192.168.178.47:8080/quong"));
         latch.await();
     }
 }
