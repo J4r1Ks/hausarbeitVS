@@ -1,7 +1,10 @@
 package de.hsos.vs.pong.repository;
 
 import de.hsos.vs.pong.model.ChatMessage;
+import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -10,9 +13,13 @@ import java.util.List;
 
 public interface ChatRepository extends JpaRepository<ChatMessage, Long> {
 
-    // Lobby Chat Nachrichten (neuste zuerst, limitiert)
+    // Lobby Chat Nachrichten (neueste zuerst, limitiert)
     @Query("SELECT c FROM ChatMessage c WHERE c.type = 'LOBBY' ORDER BY c.timestamp DESC")
-    List<ChatMessage> findLobbyMessagesOrderByTimestampDesc();
+    List<ChatMessage> findLobbyMessagesOrderByTimestampDesc(Pageable pageable);
+
+    // Wenn du eine nicht-limitierte Variante brauchst, gib ihr einen anderen Namen
+    @Query("SELECT c FROM ChatMessage c WHERE c.type = 'LOBBY' ORDER BY c.timestamp DESC")
+    List<ChatMessage> findAllLobbyMessagesOrderByTimestampDesc();
 
     // Game Chat Nachrichten für bestimmte Session
     @Query("SELECT c FROM ChatMessage c WHERE c.type = 'GAME' AND c.gameSessionId = :sessionId ORDER BY c.timestamp ASC")
@@ -26,7 +33,17 @@ public interface ChatRepository extends JpaRepository<ChatMessage, Long> {
     @Query("SELECT c FROM ChatMessage c WHERE c.type = 'GAME' AND c.gameSessionId = :sessionId AND c.timestamp > :since ORDER BY c.timestamp ASC")
     List<ChatMessage> findGameMessagesSince(@Param("sessionId") Long sessionId, @Param("since") LocalDateTime since);
 
+    // Anzahl der Lobby-Nachrichten
+    @Query("SELECT COUNT(c) FROM ChatMessage c WHERE c.type = 'LOBBY'")
+    long countLobbyMessages();
+
+    // Letzte Lobby-Nachricht-Zeit (MAX timestamp) — die Methode, die vorher fehlgeschlagen ist
+    @Query("SELECT MAX(c.timestamp) FROM ChatMessage c WHERE c.type = 'LOBBY'")
+    LocalDateTime findLastLobbyTimestamp();
+
     // Alte Nachrichten löschen (für Cleanup)
+    @Modifying
+    @Transactional
     @Query("DELETE FROM ChatMessage c WHERE c.timestamp < :before")
     void deleteMessagesOlderThan(@Param("before") LocalDateTime before);
 }
