@@ -36,7 +36,9 @@ public class PongClient {
                     game.game.start(game.gameChat, session);
                 });
                 gameThread.start();
-                latch.countDown();
+                if(gameThread.isAlive()) {
+                    latch.countDown();
+                }
             } else if(json.getString("type").equals("setData")){
                 GameDataPackage gameDataPackage = new GameDataPackage();
                 gameDataPackage.setValues(json);
