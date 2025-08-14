@@ -147,7 +147,7 @@
                     websocket.send('{"type":"startGame", "numberOfPlayers":'+numberOfPlayers+', "playerID":'+playerID+'}');
                     ++playerID;
                 }else if(data.type === "getData"){
-                    websocket.send(JSON.stringify(data));
+                    websocket.send(event.data);
                 }
             }catch (e) {
                 console.error("Error occured while parsing the message: ", e, event.data);
