@@ -1,6 +1,6 @@
-package de.hsos.vs.pong.rest;
+package de.hsos.vs.pong.controller;
 
-import de.hsos.vs.pong.chat.ChatService;
+import de.hsos.vs.pong.service.ChatService;
 import de.hsos.vs.pong.model.ChatMessage;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;

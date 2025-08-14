@@ -1,4 +1,4 @@
-package de.hsos.vs.pong.chat;
+package de.hsos.vs.pong.service;
 
 import de.hsos.vs.pong.model.ChatMessage;
 import de.hsos.vs.pong.repository.ChatRepository;
