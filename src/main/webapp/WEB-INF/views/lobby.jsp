@@ -144,8 +144,11 @@
                 console.log(event.data);
                 let data = JSON.parse(event.data);
                 if(data.type === "giveValues" && playerID < 4){
-                    websocket.send('{"type":"startGame", "sessionID":'+data.sessionID+', "numberOfPlayers":'+numberOfPlayers+', "playerID":'+playerID+'}');
+                    websocket.send('{"type":"startGame", "numberOfPlayers":'+numberOfPlayers+', "playerID":'+playerID+'}');
                     playerID++;
+                }else if(data.type === "getData"){
+                    data.type = "setData";
+                    websocket.send(data);
                 }
             }catch (e) {
                 console.error("Error occured while parsing the message: ", e, event.data);

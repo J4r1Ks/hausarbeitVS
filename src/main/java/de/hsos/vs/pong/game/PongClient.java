@@ -18,7 +18,6 @@ public class PongClient {
         try {
             JSONObject json = new JSONObject();
             json.put("type", "giveValues");
-            json.put("sessionID", session.getId());
             session.getBasicRemote().sendText(json.toString());
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -30,16 +29,16 @@ public class PongClient {
     public void onMessage(String message, Session session) {
         if(message.startsWith("{")) {
             JSONObject json = new JSONObject(message);
-            if(json.getString("type").equals("startGame") && json.getInt("sessionID") == Integer.parseInt(session.getId())) {
+            if(json.getString("type").equals("startGame") && gameThread == null) {
                 gameThread = new Thread(() -> {
                     game = new Game(json.getInt("numberOfPlayers"), json.getInt("playerID"));
                     game.game.start(game.gameChat, session);
                 });
                 gameThread.start();
                 running = false;
-            } else if(json.getString("type").equals("getData")){
+            } else if(json.getString("type").equals("setData")){
                 GameDataPackage gameDataPackage = new GameDataPackage();
-                gameDataPackage.setValues(json, Integer.parseInt(session.getId()));
+                gameDataPackage.setValues(json);
                 game.game.setGameData(gameDataPackage);
             }
         }

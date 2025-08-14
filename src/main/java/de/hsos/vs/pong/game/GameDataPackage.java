@@ -11,8 +11,8 @@ public class GameDataPackage {
 
     public int[] playerPos =  new int[4];
 
-    public void setValues(JSONObject json, int sessionID){
-        if(sessionID == 0){
+    public void setValues(JSONObject json){
+        if(json.has("player1Pos")){
             ballX = json.getFloat("ballX");
             ballY = json.getFloat("ballY");
             dirX = json.getFloat("dirX");
