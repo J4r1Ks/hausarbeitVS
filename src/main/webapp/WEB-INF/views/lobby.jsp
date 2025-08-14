@@ -166,99 +166,107 @@
     /**
      * Chat related
      */
-        // server-injected Werte (JSP)
-    const csrfToken = '${_csrf.token}';
+// server-injected Werte (JSP)
     const contextPath = '${pageContext.request.contextPath}';
+    const csrfToken = '${_csrf.token}';
     const username = '<%= username %>';
 
-    // Polling state
-    let lastTimestamp = null; // z.B. "2025-08-09T15:13:31.385"
-    const pollIntervalMs = 2500; // poll alle 2.5s
-    let pollHandle = null;
+    // state
+    let lastTimestamp = null;
+    let longPollRunning = false;
 
-    // DOM references
+    // DOM refs
     const messagesDiv = document.getElementById('messages');
     const chatInput = document.getElementById('chatInput');
     const sendBtn = document.getElementById('sendBtn');
     const statusDiv = document.getElementById('chatStatus');
+    const seenMessageIds = new Set();
 
-    // initial load: hole die letzten 50 Nachrichten
+    // --- Initial load ---
     async function loadInitialMessages() {
         try {
-            const resp = await fetch(contextPath + '/api/chat/lobby/messages?limit=50');
+            const resp = await fetch(contextPath + '/api/chat/lobby/messages?limit=50', { method: 'GET', credentials: 'same-origin' });
             if (!resp.ok) throw new Error('HTTP ' + resp.status);
             const data = await resp.json();
             if (!data.success) throw new Error(data.error || 'error loading messages');
 
-            // server liefert newest first (DESC). Wir wollen oldest-first anzeigen.
             let msgs = data.messages || [];
-            msgs = msgs.slice().reverse();
-
+            msgs = msgs.slice().reverse(); // oldest-first
             renderMessages(msgs);
 
             if (msgs.length > 0) {
-                // neueste ist jetzt letztes Element
                 lastTimestamp = msgs[msgs.length - 1].timestamp;
             } else {
-                // fallback: aktuelle Zeit (ohne Z)
-                lastTimestamp = (new Date()).toISOString().slice(0,19);
+                // fallback: ISO ohne Millisekunden
+                lastTimestamp = new Date().toISOString().split('.')[0];
             }
-
-            // Start polling
-            if (!pollHandle) pollHandle = setInterval(pollNewMessages, pollIntervalMs);
-            setStatus('Letzte Aktualisierung: ' + new Date().toLocaleString());
+            setStatus('Letzte Aktualisierung: ' + new Date().toLocaleTimeString());
         } catch (e) {
             console.error('Fehler beim Laden initialer Nachrichten:', e);
             setStatus('Fehler beim Laden der Nachrichten');
+            // trotzdem initialisieren, damit longPoll laufen kann
+            lastTimestamp = new Date().toISOString().split('.')[0];
         }
     }
 
-    // Poll: lade neue Nachrichten seit lastTimestamp
-    async function pollNewMessages() {
-        if (!lastTimestamp) return;
-        try {
-            const url = contextPath + '/api/chat/lobby/messages/since?since=' + encodeURIComponent(lastTimestamp);
-            const resp = await fetch(url);
-            if (!resp.ok) {
-                console.warn('Polling HTTP', resp.status);
-                return;
-            }
-            const data = await resp.json();
-            if (!data.success) return;
+    // --- Long-poll loop ---
+    async function longPollLoop() {
+        if (longPollRunning) return;
+        longPollRunning = true;
 
-            const newMsgs = data.messages || [];
-            if (newMsgs.length > 0) {
-                appendMessages(newMsgs);
-                lastTimestamp = newMsgs[newMsgs.length - 1].timestamp;
-                setStatus('Neue Nachrichten: ' + newMsgs.length + ' — ' + new Date().toLocaleTimeString());
-            }
-        } catch (e) {
-            console.error('Polling error', e);
+        if (!lastTimestamp) {
+            await loadInitialMessages();
         }
+
+        async function doLongPoll() {
+            try {
+                const url = contextPath + '/api/chat/lobby/longpoll?since=' + encodeURIComponent(lastTimestamp);
+                const resp = await fetch(url, { method: 'GET', credentials: 'same-origin' });
+                if (!resp.ok) {
+                    console.warn('Long-poll HTTP', resp.status);
+                    setTimeout(doLongPoll, 2000);
+                    return;
+                }
+                const data = await resp.json();
+                if (data && data.success && Array.isArray(data.messages) && data.messages.length > 0) {
+                    appendMessages(data.messages);
+                    // KORREKT: letztes Element durch length-1
+                    lastTimestamp = data.messages[data.messages.length - 1].timestamp;
+                }
+                // sofort neuen Long-Poll starten (kleiner gap)
+                setTimeout(doLongPoll, 50);
+            } catch (e) {
+                console.error('Long-poll failed', e);
+                setTimeout(doLongPoll, 2000);
+            }
+        }
+
+        doLongPoll();
     }
 
-    // Sende Nachricht (AJAX POST JSON)
+    // --- Send message (POST) ---
     async function sendMessage() {
         if (!chatInput) return;
         const text = chatInput.value.trim();
         if (!text) return;
         sendBtn.disabled = true;
         try {
-            const body = JSON.stringify({ message: text });
             const resp = await fetch(contextPath + '/api/chat/lobby/send', {
                 method: 'POST',
+                credentials: 'same-origin',
                 headers: {
                     'Content-Type': 'application/json',
                     'X-CSRF-TOKEN': csrfToken
                 },
-                body: body
+                body: JSON.stringify({ message: text })
             });
             const data = await resp.json();
             if (resp.ok && data.success) {
-                // server returns chatMessage; füge direkt an
                 const msg = data.chatMessage;
-                appendMessages([ msg ]);
-                lastTimestamp = msg.timestamp; // newest
+                appendMessages([msg]);
+                if (msg.timestamp) {
+                    lastTimestamp = msg.timestamp;
+                }
                 chatInput.value = '';
                 setStatus('Nachricht gesendet');
             } else {
@@ -273,33 +281,54 @@
         }
     }
 
-    // Render initial list (ersetzt gesamten Inhalt)
+    // --- DOM helpers ---
     function renderMessages(msgList) {
         if (!messagesDiv) return;
         messagesDiv.innerHTML = '';
-        msgList.forEach(m => messagesDiv.appendChild(createMessageElement(m)));
+        seenMessageIds.clear(); // beim kompletten Neuladen alte IDs entfernen
+        msgList.forEach(m => {
+            const el = createMessageElement(m);
+            messagesDiv.appendChild(el);
+            if (m.id != null) seenMessageIds.add(String(m.id));
+        });
+        //Update lastTimestamp sicher auf das neueste angezeigte
+        if (msgList.length > 0) {
+            lastTimestamp = msgList[msgList.length - 1].timestamp;
+        }
         scrollMessagesToBottom();
     }
 
-    // Append (one or several new messages) to the end
     function appendMessages(msgList) {
         if (!messagesDiv) return;
-        msgList.forEach(m => messagesDiv.appendChild(createMessageElement(m)));
+        msgList.forEach(m => {
+            const id = m.id != null ? String(m.id) : null;
+            if (id && seenMessageIds.has(id)) {
+                return;
+            }
+            const el = createMessageElement(m);
+            messagesDiv.appendChild(el);
+            if (id) seenMessageIds.add(id);
+        });
+        // Update lastTimestamp falls neue Nachrichten angefügt wurden
+        if (msgList.length > 0) {
+            const newest = msgList[msgList.length - 1];
+            if (newest && newest.timestamp) lastTimestamp = newest.timestamp;
+        }
         scrollMessagesToBottom();
     }
 
-    // Create DOM element for message (kein JSP-EL in JS Strings!)
     function createMessageElement(m) {
         const container = document.createElement('div');
         container.className = 'msg';
-
+        // set data-id wenn vorhanden, hilft Debugging and CSS
+        if (m.id != null) {
+            container.setAttribute('data-id', String(m.id));
+        }
         const meta = document.createElement('div');
         meta.className = 'meta';
         meta.textContent = (m.username || 'unknown') + ' — ' + formatTimestamp(m.timestamp || '');
-
         const body = document.createElement('div');
         body.textContent = m.message || '';
-
         container.appendChild(meta);
         container.appendChild(body);
         return container;
@@ -312,7 +341,9 @@
             const dt = new Date(s);
             if (isNaN(dt)) return ts;
             return dt.toLocaleString();
-        } catch(e){ return ts; }
+        } catch (e) {
+            return ts;
+        }
     }
 
     function scrollMessagesToBottom() {
@@ -325,9 +356,9 @@
         statusDiv.textContent = text;
     }
 
-    // allow pressing Enter to send
+    // Enter to send + button
     if (chatInput) {
-        chatInput.addEventListener('keydown', function(e){
+        chatInput.addEventListener('keydown', function (e) {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
                 sendMessage();
@@ -336,11 +367,11 @@
     }
     if (sendBtn) sendBtn.addEventListener('click', sendMessage);
 
-    // initialize
-    loadInitialMessages();
+    // --- Start everything ---
+    (async function init() {
+        await loadInitialMessages();
+        longPollLoop(); // <-- wichtig: Long-Poll starten
+    })();
 </script>
-
-
-
 </body>
 </html>

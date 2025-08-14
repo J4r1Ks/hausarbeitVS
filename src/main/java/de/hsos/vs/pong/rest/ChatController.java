@@ -5,8 +5,10 @@ import de.hsos.vs.pong.model.ChatMessage;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.async.DeferredResult;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -109,5 +111,26 @@ public class ChatController {
             response.put("error", "Fehler beim Laden neuer Nachrichten");
             return ResponseEntity.badRequest().body(response);
         }
+    }
+
+    /**
+     * Long-Poll endpoint: wartet bis neue Lobby-Nachrichten seit 'since' vorhanden sind oder bis Timeout
+     */
+    @GetMapping("/lobby/longpoll")
+    public DeferredResult<ResponseEntity<Map<String, Object>>> longPoll(@RequestParam String since) {
+        LocalDateTime sinceTime;
+        try {
+            sinceTime = LocalDateTime.parse(since);
+        } catch (DateTimeParseException e) {
+            // Falls Parse-Fehler: antworte sofort mit Fehler
+            DeferredResult<ResponseEntity<Map<String, Object>>> dr = new DeferredResult<>();
+            Map<String, Object> err = new HashMap<>();
+            err.put("success", false);
+            err.put("error", "Invalid 'since' parameter");
+            dr.setErrorResult(ResponseEntity.badRequest().body(err));
+            return dr;
+        }
+
+        return chatService.registerLongPoll(sinceTime);
     }
 }
