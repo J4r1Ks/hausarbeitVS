@@ -3,6 +3,7 @@ package de.hsos.vs.pong.game;
 import jakarta.websocket.*;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.net.URI;
 
 @ClientEndpoint
@@ -12,17 +13,24 @@ public class PongClient {
 
     @OnOpen
     public void onOpen(Session session) {
-        System.out.println("SessionID: "+session.getId());
-        game = new Game(4, 0);
-        game.game.start(game.gameChat, session);
+        try {
+            session.getBasicRemote().sendText("giveValues");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        new Thread(() -> {
+            game = new Game(4, 0);
+            game.game.start(game.gameChat, session);
+        }).start();
     }
 
     @OnMessage
     public void onMessage(String message) {
+        /*System.out.println("Message received: "+message);
         JSONObject data = new JSONObject(message);
         GameDataPackage gameDataPackage = new GameDataPackage();
         gameDataPackage.setValues(data);
-        game.game.setGameData(gameDataPackage);
+        game.game.setGameData(gameDataPackage);*/
     }
 
     public static void main(String[] args) throws Exception {

@@ -72,9 +72,10 @@
 
         websocket.onmessage = function (event) {
             try {
+                console.log('Received: ' + event.data);
                 //const message = JSON.parse(event.data);
                 //console.log(JSON.parse(event.data));
-                websocket.send(event.data);
+                //websocket.send(event.data);
             }catch (e) {
                 console.error("Error occured while parsing the message: ", e, event.data);
             }

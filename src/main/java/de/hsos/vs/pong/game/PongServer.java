@@ -12,6 +12,7 @@ public class PongServer {
 
     private static final List<Session> sessions = new ArrayList<>();
     private static final GameDataPackage gameDataPackage = new GameDataPackage();
+    private static int numberOfPlayers;
 
     @OnOpen
     public void onOpen(Session session) {
@@ -30,7 +31,7 @@ public class PongServer {
                 sessions.add(session);
             }
             System.out.println("new WebSocket-Session: " + session.getId());
-            //sendAllEntriesTo(session);
+            session.getBasicRemote().sendText(numberOfPlayers+"");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -57,6 +58,7 @@ public class PongServer {
             games.get(userID).game.setGameData(gameDataPackage);*/
             for(Session s : sessions){
                 //s.getBasicRemote().sendText(data.toString());
+                s.getBasicRemote().sendText(message);
             }
         } catch (Exception e) {
             e.printStackTrace();
