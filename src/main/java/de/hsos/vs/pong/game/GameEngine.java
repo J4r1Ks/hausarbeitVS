@@ -33,7 +33,7 @@ public class GameEngine extends JPanel {
         long timer = System.currentTimeMillis();
 
         while(winner()){
-            if(System.currentTimeMillis()-timer > 300 && !paused){
+            if(System.currentTimeMillis()-timer > 66 && !paused){
                 timer = System.currentTimeMillis();
                 this.update(this.getGraphics());
                 gameChat.updateScore();

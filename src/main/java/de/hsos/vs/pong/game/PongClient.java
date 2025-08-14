@@ -37,7 +37,7 @@ public class PongClient {
                     latch.countDown();
                 });
                 gameThread.start();
-            } else if(json.getString("type").equals("getData")){
+            } else if(json.getString("type").equals("setData")){
                 game.game.setGameData(json);
             }
         }
