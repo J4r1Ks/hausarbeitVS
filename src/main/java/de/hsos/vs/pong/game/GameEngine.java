@@ -33,7 +33,7 @@ public class GameEngine extends JPanel {
         long timer = System.currentTimeMillis();
 
         while(winner()){
-            if(System.currentTimeMillis()-timer > 12 && !paused){
+            if(System.currentTimeMillis()-timer > 300 && !paused){
                 timer = System.currentTimeMillis();
                 this.update(this.getGraphics());
                 gameChat.updateScore();
@@ -68,19 +68,21 @@ public class GameEngine extends JPanel {
             gameData.put("player4Pos", players[3].playerPositionX);
         return gameData;
     }
-    public void setGameData(GameDataPackage gdp){
-        ballX = gdp.ballX;
-        ballY = gdp.ballY;
-        dirX = gdp.dirX;
-        dirY = gdp.dirY;
-        ballSpeed = gdp.ballSpeed;
-        for(int i = 0; i < numberOfPlayers; i++){
-            if(players[i].vertical){
-                players[i].playerPositionY = gdp.playerPos[i];
-            }else{
-                players[i].playerPositionX = gdp.playerPos[i];
-            }
+    public void setGameData(JSONObject json){
+        if(json.has("player1Pos")){
+            ballX = json.getFloat("ballX");
+            ballY = json.getFloat("ballY");
+            dirX = json.getFloat("dirX");
+            dirY = json.getFloat("dirY");
+            ballSpeed = json.getFloat("ballSpeed");
+            players[0].playerPositionY = json.getInt("player1Pos");
         }
+        if(json.has("player2Pos"))
+            players[1].playerPositionY = json.getInt("player2Pos");
+        if(json.has("player3Pos"))
+            players[2].playerPositionX = json.getInt("player3Pos");
+        if(json.has("player4Pos"))
+            players[3].playerPositionX = json.getInt("player4Pos");
     }
 
     @Override

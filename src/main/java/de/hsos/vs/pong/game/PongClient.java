@@ -37,17 +37,15 @@ public class PongClient {
                     latch.countDown();
                 });
                 gameThread.start();
-            } else if(json.getString("type").equals("setData")){
-                GameDataPackage gameDataPackage = new GameDataPackage();
-                gameDataPackage.setValues(json);
-                game.game.setGameData(gameDataPackage);
+            } else if(json.getString("type").equals("getData")){
+                game.game.setGameData(json);
             }
         }
     }
 
     public static void main(String[] args) throws Exception {
         WebSocketContainer container = ContainerProvider.getWebSocketContainer();
-        container.connectToServer(new PongClient(), URI.create("ws://192.168.178.47:8080/quong"));
+        container.connectToServer(new PongClient(), URI.create("ws://169.254.72.225:8080/quong"));
         latch.await();
     }
 }

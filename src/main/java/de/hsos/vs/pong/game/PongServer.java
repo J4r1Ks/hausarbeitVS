@@ -41,7 +41,7 @@ public class PongServer {
     @OnMessage
     public void onMessage(String message, Session session) {
         try {
-            if(message.startsWith("{")){
+            /*if(message.startsWith("{")){
                 JSONObject data = new JSONObject(message);
                 if(data.getString("type").equals("getData")){
                     if(data.has("player1Pos")){
@@ -59,11 +59,11 @@ public class PongServer {
                     if(data.has("player4Pos"))
                         gameDataPackage.playerPos[3] = data.getInt("player4Pos");
                     for(Session s : sessions){
-                        s.getBasicRemote().sendText(data.toString());
+                        s.getBasicRemote().sendText(gameDataPackage.getValues().toString());
                     }
                     return;
                 }
-            }
+            }*/
             for(Session s : sessions){
                 s.getBasicRemote().sendText(message);
             }

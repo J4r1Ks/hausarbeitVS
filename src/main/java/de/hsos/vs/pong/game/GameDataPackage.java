@@ -27,7 +27,7 @@ public class GameDataPackage {
         if(json.has("player4Pos"))
             playerPos[3] = json.getInt("player4Pos");
     }
-    public JSONObject getValues(){
+    /*public JSONObject getValues(){
         JSONObject json = new JSONObject();
         json.put("type", "setData");
         json.put("ballX", ballX);
@@ -40,5 +40,5 @@ public class GameDataPackage {
         json.put("player3Pos", playerPos[2]);
         json.put("player4Pos", playerPos[3]);
         return json;
-    }
+    }*/
 }
