@@ -58,7 +58,14 @@ public class PongServer {
             games.get(userID).game.setGameData(gameDataPackage);*/
             for(Session s : sessions){
                 //s.getBasicRemote().sendText(data.toString());
-                s.getBasicRemote().sendText(message);
+                /*if(message.startsWith("{")){
+                    JSONObject json = new JSONObject(message);
+                    if(json.getString("type").equals("getData")) {
+                        s.getBasicRemote().sendText(json.toString());
+                    }
+                }else{*/
+                    s.getBasicRemote().sendText(message);
+                //}
             }
         } catch (Exception e) {
             e.printStackTrace();

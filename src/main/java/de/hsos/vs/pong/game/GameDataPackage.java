@@ -11,15 +11,20 @@ public class GameDataPackage {
 
     public int[] playerPos =  new int[4];
 
-    public void setValues(JSONObject json){
-        ballX = json.getFloat("ballX");
-        ballY = json.getFloat("ballY");
-        dirX = json.getFloat("dirX");
-        dirY = json.getFloat("dirY");
-        ballSpeed = json.getFloat("ballSpeed");
-        playerPos[0] = json.getInt("player1Pos");
-        playerPos[1] = json.getInt("player2Pos");
-        playerPos[2] = json.getInt("player3Pos");
-        playerPos[3] = json.getInt("player4Pos");
+    public void setValues(JSONObject json, int sessionID){
+        if(sessionID == 0){
+            ballX = json.getFloat("ballX");
+            ballY = json.getFloat("ballY");
+            dirX = json.getFloat("dirX");
+            dirY = json.getFloat("dirY");
+            ballSpeed = json.getFloat("ballSpeed");
+            playerPos[0] = json.getInt("player1Pos");
+        }
+        if(json.has("player2Pos"))
+            playerPos[1] = json.getInt("player2Pos");
+        if(json.has("player3Pos"))
+            playerPos[2] = json.getInt("player3Pos");
+        if(json.has("player4Pos"))
+            playerPos[3] = json.getInt("player4Pos");
     }
 }

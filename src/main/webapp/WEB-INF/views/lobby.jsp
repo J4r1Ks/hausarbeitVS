@@ -52,13 +52,13 @@
         <input type="radio" id="numberOfPlayers" name="numberOfPlayers" value="3"><span>3</span>
         <input type="radio" id="numberOfPlayers" name="numberOfPlayers" value="4"><span>4</span>
     </fieldset>
-    <span>playerID</span>
+    <!-- <span>playerID</span>
     <fieldset>
         <input type="radio" id="playerID" name="playerID" value="0"><span>0</span>
         <input type="radio" id="playerID" name="playerID" value="1"><span>1</span>
         <input type="radio" id="playerID" name="playerID" value="2"><span>2</span>
         <input type="radio" id="playerID" name="playerID" value="3"><span>3</span>
-    </fieldset>
+    </fieldset> -->
     <button onclick="createWebsocket('quong')">Create Game</button>
 </div>
 
@@ -94,8 +94,9 @@
      */
     let websocket;
     let numberOfPlayers;
+    let playerID = 0;
 
-    function disableAllPlayerIDs(){
+    /*function disableAllPlayerIDs(){
         let playerIDs = document.getElementsByName("playerID");
 
         playerIDs.forEach((playerID) => {
@@ -103,32 +104,32 @@
             playerID.checked = false;
         });
         playerIDs[0].checked = true;
-    }
+    }*/
 
     function setPlayerSelection(){
         let playerSelections = document.getElementsByName("numberOfPlayers");
-        let playerIDs = document.getElementsByName("playerID");
+        //let playerIDs = document.getElementsByName("playerID");
 
-        disableAllPlayerIDs();
+        //disableAllPlayerIDs();
 
         playerSelections.forEach((playerSelection) => {
             if(playerSelection.checked){
                 numberOfPlayers = playerSelection.value;
             }
         });
-        for(let i = 0; i < numberOfPlayers; i++){
+        /*for(let i = 0; i < numberOfPlayers; i++){
             playerIDs[i].disabled = false;
-        }
+        }*/
     }
 
     function createWebsocket(url){
-        let playerIDs = document.getElementsByName("playerID");
+        /*let playerIDs = document.getElementsByName("playerID");
         playerIDs.forEach((playerID) => {
             if(playerID.checked){
                 //url = playerID.value;
                 return 0;
             }
-        });
+        });*/
 
         websocket = new WebSocket(url);
 
@@ -140,10 +141,12 @@
 
         websocket.onmessage = function (event) {
             try {
-                console.log('Received: ' + event.data);
-                //const message = JSON.parse(event.data);
-                //console.log(JSON.parse(event.data));
-                //websocket.send(event.data);
+                console.log(event.data);
+                let data = JSON.parse(event.data);
+                if(data.type === "giveValues" && playerID < 4){
+                    websocket.send('{"type":"startGame", "sessionID":'+data.sessionID+', "numberOfPlayers":'+numberOfPlayers+', "playerID":'+playerID+'}');
+                    playerID++;
+                }
             }catch (e) {
                 console.error("Error occured while parsing the message: ", e, event.data);
             }
@@ -156,7 +159,7 @@
 
     }
 
-    disableAllPlayerIDs();
+    //disableAllPlayerIDs();
 
     /**
      * Chat related

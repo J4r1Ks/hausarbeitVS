@@ -51,6 +51,7 @@ public class GameEngine extends JPanel {
 
     private JSONObject getGameData() {
         JSONObject gameData = new JSONObject();
+        gameData.put("type", "getData");
         if(choosePlayer == 0){
             gameData.put("player1Pos", players[0].playerPositionY);
             gameData.put("ballX", ballX);
