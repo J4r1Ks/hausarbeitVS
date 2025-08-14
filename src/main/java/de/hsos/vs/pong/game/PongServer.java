@@ -12,8 +12,6 @@ import java.util.Objects;
 public class PongServer {
 
     private static final List<Session> sessions = new ArrayList<>();
-    private static final GameDataPackage gameDataPackage = new GameDataPackage();
-    private static int numberOfPlayers;
 
     @OnOpen
     public void onOpen(Session session) {
@@ -32,7 +30,6 @@ public class PongServer {
                 sessions.add(session);
             }
             System.out.println("new WebSocket-Session: " + session.getId());
-            session.getBasicRemote().sendText(numberOfPlayers+"");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -41,29 +38,6 @@ public class PongServer {
     @OnMessage
     public void onMessage(String message, Session session) {
         try {
-            /*if(message.startsWith("{")){
-                JSONObject data = new JSONObject(message);
-                if(data.getString("type").equals("getData")){
-                    if(data.has("player1Pos")){
-                        gameDataPackage.ballX = data.getFloat("ballX");
-                        gameDataPackage.ballY = data.getFloat("ballY");
-                        gameDataPackage.dirX = data.getFloat("dirX");
-                        gameDataPackage.dirY = data.getFloat("dirY");
-                        gameDataPackage.ballSpeed = data.getFloat("ballSpeed");
-                        gameDataPackage.playerPos[0] = data.getInt("player1Pos");
-                    }
-                    if(data.has("player2Pos"))
-                        gameDataPackage.playerPos[1] = data.getInt("player2Pos");
-                    if(data.has("player3Pos"))
-                        gameDataPackage.playerPos[2] = data.getInt("player3Pos");
-                    if(data.has("player4Pos"))
-                        gameDataPackage.playerPos[3] = data.getInt("player4Pos");
-                    for(Session s : sessions){
-                        s.getBasicRemote().sendText(gameDataPackage.getValues().toString());
-                    }
-                    return;
-                }
-            }*/
             if(message.startsWith("{")){
                 JSONObject jsonObject = new JSONObject(message);
                 if(jsonObject.getString("type").equals("getData")){

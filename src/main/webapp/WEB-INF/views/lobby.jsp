@@ -96,41 +96,17 @@
     let numberOfPlayers;
     let playerID = 0;
 
-    /*function disableAllPlayerIDs(){
-        let playerIDs = document.getElementsByName("playerID");
-
-        playerIDs.forEach((playerID) => {
-            playerID.disabled = true;
-            playerID.checked = false;
-        });
-        playerIDs[0].checked = true;
-    }*/
-
     function setPlayerSelection(){
         let playerSelections = document.getElementsByName("numberOfPlayers");
-        //let playerIDs = document.getElementsByName("playerID");
-
-        //disableAllPlayerIDs();
 
         playerSelections.forEach((playerSelection) => {
             if(playerSelection.checked){
                 numberOfPlayers = playerSelection.value;
             }
         });
-        /*for(let i = 0; i < numberOfPlayers; i++){
-            playerIDs[i].disabled = false;
-        }*/
     }
 
     function createWebsocket(url){
-        /*let playerIDs = document.getElementsByName("playerID");
-        playerIDs.forEach((playerID) => {
-            if(playerID.checked){
-                //url = playerID.value;
-                return 0;
-            }
-        });*/
-
         websocket = new WebSocket(url);
 
         websocket.onopen = function (event) {
@@ -141,13 +117,10 @@
 
         websocket.onmessage = function (event) {
             try {
-                //console.log(event.data);
                 let data = JSON.parse(event.data);
                 if(data.type === "giveValues" && playerID < 4){
                     websocket.send('{"type":"startGame", "numberOfPlayers":'+numberOfPlayers+', "playerID":'+playerID+'}');
                     ++playerID;
-                }else if(data.type === "getData"){
-                    websocket.send(event.data);
                 }
             }catch (e) {
                 console.error("Error occured while parsing the message: ", e, event.data);
@@ -160,8 +133,6 @@
         };
 
     }
-
-    //disableAllPlayerIDs();
 
     /**
      * Chat related
