@@ -20,7 +20,7 @@ public class GameEngine extends JPanel {
     public float ballY = 400;
     public float dirX = -1;
     public float dirY = -0.5f;
-    public float ballSpeed = 3;
+    public float ballSpeed = 8;
 
     public GameEngine(PlayerController[] players, int numberOfPlayers, int choosePlayer) {
         this.setPreferredSize(new Dimension(800, 800));
