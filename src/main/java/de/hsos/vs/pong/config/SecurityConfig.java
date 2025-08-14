@@ -35,8 +35,13 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                // WICHTIG: CSRF für Entwicklung deaktivieren
-                //.csrf(csrf -> csrf.disable())
+/*
+                .csrf(csrf -> csrf
+                        .ignoringRequestMatchers("/api/chat/**")
+                        .ignoringRequestMatchers("/quong/**")
+                )
+
+ */
 
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
@@ -45,8 +50,11 @@ public class SecurityConfig {
                                 "/login",
                                 "/perform_login",
                                 "/error",
+                                "/js/**",
                                 "/quong"
                         ).permitAll()
+                       // .requestMatchers("/api/chat/**").authenticated()
+                       // .requestMatchers("/quong/**").authenticated()
                         .anyRequest().authenticated()
                 )
 
