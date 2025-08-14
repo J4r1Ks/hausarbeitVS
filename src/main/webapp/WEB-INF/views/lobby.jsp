@@ -121,7 +121,7 @@
         };
 
         websocket.onmessage = function (event) {
-            console.log(event.data);
+            //console.log(event.data);
             try {
                 let data = JSON.parse(event.data);
                 if(data.type === "giveValues" && playerID < 4){
