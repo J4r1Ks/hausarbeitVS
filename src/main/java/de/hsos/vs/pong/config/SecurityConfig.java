@@ -31,13 +31,12 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-/*
+
                 .csrf(csrf -> csrf
                         .ignoringRequestMatchers("/api/chat/**")
                         .ignoringRequestMatchers("/quong/**")
                 )
 
- */
 
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
@@ -47,19 +46,12 @@ public class SecurityConfig {
                                 "/perform_login",
                                 "/error",
                                 "/js/**",
-                                "/quong" // <- muss noch angeguckt werden, wie man das authorisiert bekommt.
+                                "/quong"
                         ).permitAll()
-                        //.requestMatchers("/api/chat/**").authenticated()
-                       // .requestMatchers("/quong/**").authenticated()
+                        .requestMatchers("/api/chat/**").authenticated()
+                        .requestMatchers("/quong/**").authenticated()
                         .anyRequest().authenticated()
                 )
-
-                // Headers für H2 Console
-                /*
-                .headers(headers -> headers
-                        .frameOptions().sameOrigin()
-                )
-                 */
 
                 .formLogin(form -> form
                         .loginPage("/login")

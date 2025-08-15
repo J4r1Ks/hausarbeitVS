@@ -12,7 +12,7 @@ public class PepperAwarePasswordEncoder implements PasswordEncoder {
 
     public PepperAwarePasswordEncoder(@Value("${security.pepper}") String pepper) {
         this.pepper = pepper;
-        this.bcrypt = new BCryptPasswordEncoder(); // optional: set strength
+        this.bcrypt = new BCryptPasswordEncoder();
     }
 
     private String applyPepper(CharSequence raw) {

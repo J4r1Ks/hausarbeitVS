@@ -23,11 +23,8 @@ public class ChatMessage {
     @Enumerated(EnumType.STRING)
     private ChatType type = ChatType.LOBBY;
 
-    @Column
-    private Long gameSessionId; // null für Lobby-Chat, ID für Game-Chat
-
     public enum ChatType {
-        LOBBY, GAME
+        LOBBY
     }
 
     public ChatMessage() {}
@@ -38,20 +35,11 @@ public class ChatMessage {
         this.type = type;
     }
 
-    public ChatMessage(String username, String message, ChatType type, Long gameSessionId) {
-        this.username = username;
-        this.message = message;
-        this.type = type;
-        this.gameSessionId = gameSessionId;
-    }
 
     public long getId() {
         return id;
     }
 
-    public void setId(long id) {
-        this.id = id;
-    }
 
     public String getUsername() {
         return username;
@@ -85,11 +73,4 @@ public class ChatMessage {
         this.type = type;
     }
 
-    public Long getGameSessionId() {
-        return gameSessionId;
-    }
-
-    public void setGameSessionId(Long gameSessionId) {
-        this.gameSessionId = gameSessionId;
-    }
 }

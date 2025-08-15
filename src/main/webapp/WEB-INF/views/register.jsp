@@ -11,10 +11,10 @@
 
 <form action="${pageContext.request.contextPath}/register" method="post">
   <label>Benutzer:
-    <input type="text" name="username" />
+    <input type="text" name="username" required/>
   </label><br/>
   <label>Passwort:
-    <input type="password" name="password" />
+    <input type="password" name="password" required/>
   </label><br/>
   <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
   <button type="submit">Registrieren</button>

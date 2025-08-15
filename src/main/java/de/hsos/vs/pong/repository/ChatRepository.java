@@ -17,29 +17,13 @@ public interface ChatRepository extends JpaRepository<ChatMessage, Long> {
     @Query("SELECT c FROM ChatMessage c WHERE c.type = 'LOBBY' ORDER BY c.timestamp DESC")
     List<ChatMessage> findLobbyMessagesOrderByTimestampDesc(Pageable pageable);
 
-    // Wenn du eine nicht-limitierte Variante brauchst, gib ihr einen anderen Namen
-    @Query("SELECT c FROM ChatMessage c WHERE c.type = 'LOBBY' ORDER BY c.timestamp DESC")
-    List<ChatMessage> findAllLobbyMessagesOrderByTimestampDesc();
-
-    // Game Chat Nachrichten für bestimmte Session
-    @Query("SELECT c FROM ChatMessage c WHERE c.type = 'GAME' AND c.gameSessionId = :sessionId ORDER BY c.timestamp ASC")
-    List<ChatMessage> findGameMessagesBySessionId(@Param("sessionId") Long sessionId);
-
     // Lobby Chat seit bestimmtem Zeitpunkt (für Polling)
     @Query("SELECT c FROM ChatMessage c WHERE c.type = 'LOBBY' AND c.timestamp > :since ORDER BY c.timestamp ASC")
     List<ChatMessage> findLobbyMessagesSince(@Param("since") LocalDateTime since);
 
-    // Game Chat seit bestimmtem Zeitpunkt
-    @Query("SELECT c FROM ChatMessage c WHERE c.type = 'GAME' AND c.gameSessionId = :sessionId AND c.timestamp > :since ORDER BY c.timestamp ASC")
-    List<ChatMessage> findGameMessagesSince(@Param("sessionId") Long sessionId, @Param("since") LocalDateTime since);
-
     // Anzahl der Lobby-Nachrichten
     @Query("SELECT COUNT(c) FROM ChatMessage c WHERE c.type = 'LOBBY'")
     long countLobbyMessages();
-
-    // Letzte Lobby-Nachricht-Zeit (MAX timestamp) — die Methode, die vorher fehlgeschlagen ist
-    @Query("SELECT MAX(c.timestamp) FROM ChatMessage c WHERE c.type = 'LOBBY'")
-    LocalDateTime findLastLobbyTimestamp();
 
     // Alte Nachrichten löschen (für Cleanup)
     @Modifying
