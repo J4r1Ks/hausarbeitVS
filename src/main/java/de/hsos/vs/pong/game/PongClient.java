@@ -5,6 +5,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.Scanner;
 import java.util.concurrent.CountDownLatch;
 
 @ClientEndpoint
@@ -45,7 +46,10 @@ public class PongClient {
 
     public static void main(String[] args) throws Exception {
         WebSocketContainer container = ContainerProvider.getWebSocketContainer();
-        container.connectToServer(new PongClient(), URI.create("ws://192.168.1.124:8080/quong"));
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Gebe IP-Adresse und Port vom Server ein: ");
+        container.connectToServer(new PongClient(), URI.create("ws://"+scanner.nextLine()+"/quong"));
+        scanner.close();
         latch.await();
     }
 }
