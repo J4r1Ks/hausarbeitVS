@@ -38,10 +38,8 @@ public class GameEngine extends JPanel {
                 this.update(this.getGraphics());
                 gameChat.updateScore();
                 try {
-                    //synchronized (session) {
-                        JSONObject gameData = getGameData();
-                        session.getBasicRemote().sendText(gameData.toString());
-                    //}
+                    JSONObject gameData = getGameData();
+                    session.getBasicRemote().sendText(gameData.toString());
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -89,9 +87,6 @@ public class GameEngine extends JPanel {
     public void update(Graphics g) {
         this.repaint();
 
-        /*for(int i = 0; i < players.length; i++){
-            players[i].changePlayerPosition();
-        }*/
         players[choosePlayer].changePlayerPosition();
 
         if(choosePlayer == 0)

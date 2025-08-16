@@ -28,7 +28,8 @@ public class GameChat extends JPanel {
             this.add(playerScores[i]);
         }
 
-        //UI für den in-game chat, wurde gestrichen, da chat auf die weboberfläche implementiert wurde
+        //UI für den in-game chat, wurde gestrichen, da chat auf die Weboberfläche implementiert wurde
+
         /*JLabel label = new JLabel("CHAT", SwingConstants.CENTER);
         label.setFont(new Font("Mono", Font.PLAIN, 30));
         label.setForeground(secondaryColor);
