@@ -116,8 +116,6 @@
 
         websocket.onopen = function (event) {
             console.log("Websocket conntected.");
-            websocket.send(numberOfPlayers);
-            console.log("Game created.");
         };
 
         websocket.onmessage = function (event) {
