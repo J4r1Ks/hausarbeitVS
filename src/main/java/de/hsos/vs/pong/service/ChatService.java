@@ -18,7 +18,7 @@ public class ChatService {
     private final ChatRepository chatRepository;
 
     // Warteliste für Long-Polling-Anfragen
-    private final List<WaitingClient> waitingClients = new CopyOnWriteArrayList<>();
+    private final List<WaitingClient> WAITING_CLIENTS = new CopyOnWriteArrayList<>();
 
     private static final long LONG_POLL_TIMEOUT_MS = 30_000L;
 
@@ -77,7 +77,7 @@ public class ChatService {
 
         // Wenn nicht, in Warteliste aufnehmen
         WaitingClient wc = new WaitingClient(since, deferred);
-        waitingClients.add(wc);
+        WAITING_CLIENTS.add(wc);
 
         // Bei Timeout:, antworte mit leerer Liste (kein Fehler)
         deferred.onTimeout(() -> {
@@ -86,11 +86,11 @@ public class ChatService {
             res.put("messages", Collections.emptyList());
             res.put("count", 0);
             deferred.setResult(ResponseEntity.ok(res));
-            waitingClients.remove(wc);
+            WAITING_CLIENTS.remove(wc);
         });
 
         // Bei Completion aus Warteliste entfernen
-        deferred.onCompletion(() -> waitingClients.remove(wc));
+        deferred.onCompletion(() -> WAITING_CLIENTS.remove(wc));
         return deferred;
     }
 
@@ -98,19 +98,19 @@ public class ChatService {
      * Benachrichtigt alle wartenden Clients - prüft für jeden, ob es neue Nachrichten seit dessen 'since' gibt.
      */
     private void notifyWaitingClients() {
-        if(waitingClients.isEmpty()) { return; }
+        if(WAITING_CLIENTS.isEmpty()) { return; }
 
-        for (WaitingClient wc : new ArrayList<>(waitingClients)) {
+        for (WaitingClient wc : new ArrayList<>(WAITING_CLIENTS)) {
             try {
                 List<ChatMessage> msgs = getLobbyMessagesSince(wc.since);
                 if (msgs != null && !msgs.isEmpty()) {
                     Map<String, Object> map = makeMessagesResponse(msgs);
                     wc.deferred.setResult(ResponseEntity.ok(map));
-                    waitingClients.remove(wc);
+                    WAITING_CLIENTS.remove(wc);
                 }
             } catch (Exception e) {
                 // Falls beim Beantworten etwas schiefgeht: entferme und ignoriere
-                waitingClients.remove(wc);
+                WAITING_CLIENTS.remove(wc);
             }
         }
     }

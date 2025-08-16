@@ -143,7 +143,7 @@
     /**
      * Chat related
      */
-// server-injected Werte (JSP)
+    // server-injected Werte (JSP)
     const contextPath = '${pageContext.request.contextPath}';
     const csrfToken = '${_csrf.token}';
     const username = '<%= username %>';
@@ -157,9 +157,10 @@
     const chatInput = document.getElementById('chatInput');
     const sendBtn = document.getElementById('sendBtn');
     const statusDiv = document.getElementById('chatStatus');
+
     const seenMessageIds = new Set();
 
-    // --- Initial load ---
+    // Initial load
     async function loadInitialMessages() {
         try {
             const resp = await fetch(contextPath + '/api/chat/lobby/messages?limit=50', { method: 'GET', credentials: 'same-origin' });
@@ -186,7 +187,7 @@
         }
     }
 
-    // --- Long-poll loop ---
+    // Long-poll loop
     async function longPollLoop() {
         if (longPollRunning) return;
         longPollRunning = true;
@@ -221,7 +222,7 @@
         doLongPoll();
     }
 
-    // --- Send message (POST) ---
+    // Send message (POST)
     async function sendMessage() {
         if (!chatInput) return;
         const text = chatInput.value.trim();
@@ -258,7 +259,7 @@
         }
     }
 
-    // --- DOM helpers ---
+    // DOM helpers
     function renderMessages(msgList) {
         if (!messagesDiv) return;
         messagesDiv.innerHTML = '';
@@ -344,7 +345,7 @@
     }
     if (sendBtn) sendBtn.addEventListener('click', sendMessage);
 
-    // --- Start everything ---
+    // Start everything
     (async function init() {
         await loadInitialMessages();
         longPollLoop(); // <-- wichtig: Long-Poll starten
